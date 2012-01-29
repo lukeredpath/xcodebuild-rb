@@ -5,19 +5,37 @@ describe XcodeBuild::BuildReporter do
   
   shared_examples_for "any build" do
     it "reports the build target" do
-      reporter.build_target.should == "ExampleProject"
+      reporter.build.target.should == "ExampleProject"
     end
     
     it "reports the project name" do
-      reporter.project_name.should == "ExampleProject"
+      reporter.build.project_name.should == "ExampleProject"
     end
     
     it "reports the build configuration" do
-      reporter.build_configuration.should == "Release"
+      reporter.build.configuration.should == "Release"
     end
     
     it "reports if the build configuration was the default" do
-      reporter.was_default_build_configuration?.should == true
+      reporter.build.should be_default_configuration
+    end
+  end
+  
+  context "for a started build" do
+    before do
+      event({:build_started=>
+        {:target=>"ExampleProject",
+         :project=>"ExampleProject",
+         :configuration=>"Release",
+         :default=>true}})
+    end
+    
+    it "reports that the build is running" do
+      reporter.build.should be_running
+    end
+    
+    it "reports that the build is not finished" do
+      reporter.build.should_not be_finished
     end
   end
   
@@ -54,14 +72,22 @@ describe XcodeBuild::BuildReporter do
       event({:build_succeeded=>{}})
     end
     
-    it "reports that the build was successful" do
-      reporter.build_successful?.should be_true
-    end
-    
     it_behaves_like "any build"
     
+    it "reports that the build was successful" do
+      reporter.build.should be_successful
+    end
+    
     it "reports the total number of completed build actions" do
-      reporter.should have(3).build_actions_completed
+      reporter.build.should have(3).actions_completed
+    end
+    
+    it "reports that the build is not running" do
+      reporter.build.should_not be_running
+    end
+    
+    it "reports that the build is finished" do
+      reporter.build.should be_finished
     end
   end
   

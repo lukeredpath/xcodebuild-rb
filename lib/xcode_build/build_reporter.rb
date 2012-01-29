@@ -1,54 +1,76 @@
 module XcodeBuild
   class BuildReporter
-    attr_reader :build_actions_completed
-    
-    def initialize
-      @build_successful = false
-      @build_actions_completed = []
-      @build_metadata = {}
-    end
-    
-    def build_successful?
-      @build_successful
-    end
-    
-    def project_name
-      @build_metadata[:project]
-    end
-    
-    def build_target
-      @build_metadata[:target]
-    end
-    
-    def build_configuration
-      @build_metadata[:configuration]
-    end
-    
-    def was_default_build_configuration?
-      @build_metadata[:default]
-    end
-    
-    # output translator delegate methods
-    
+    attr_reader :build
+
     def build_started(params)
-      @build_metadata = params
+      @build = Build.new(params)
     end
 
     def build_action(params)
-      @build_actions_completed << params
+      @build.add_action(params)
     end
 
     def build_error_detected(params)
     end
 
     def build_succeeded
-      @build_successful = true
+      @build.succeed!
     end
 
     def build_failed
     end
 
     def build_action_failed(params)
+    end
+    
+    private
+    
+    class Build
+      attr_reader :actions_completed
+      
+      def initialize(metadata)
+        @successful = false
+        @actions_completed = []
+        @metadata = metadata
+        @finished = false
+      end
+      
+      def add_action(params)
+        @actions_completed << params
+      end
+      
+      def succeed!
+        @successful = true
+        @finished = true
+      end
+
+      def successful?
+        @successful
+      end
+      
+      def finished?
+        @finished
+      end
+      
+      def running?
+        !@finished
+      end
+
+      def project_name
+        @metadata[:project]
+      end
+
+      def target
+        @metadata[:target]
+      end
+
+      def configuration
+        @metadata[:configuration]
+      end
+
+      def default_configuration?
+        @metadata[:default]
+      end
     end
   end
 end
