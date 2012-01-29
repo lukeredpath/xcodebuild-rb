@@ -1,7 +1,7 @@
 module XcodeBuild
   module Translations
     module Building
-      def attempt_translation(line)
+      def attempt_to_translate(line)
         if line =~ /^\*\* BUILD (\w+) \*\*/
           notify_build_ended($1)
           return
@@ -71,6 +71,6 @@ module XcodeBuild
       end
     end
     
-    register_translator :building, Building
+    register_translation :building, Building
   end
 end

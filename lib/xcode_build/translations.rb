@@ -2,16 +2,16 @@ module XcodeBuild
   module Translations
     extend self
     
-    def registered_translators
+    def registered_translations
       @registered_translators ||= {}
     end
     
-    def register_translator(key, the_module)
-      registered_translators[key] = the_module
+    def register_translation(key, the_module)
+      registered_translations[key] = the_module
     end
     
-    def registered_translator(key)
-      registered_translators[key]
+    def registered_translation(key)
+      registered_translations[key]
     end
   end
 end
