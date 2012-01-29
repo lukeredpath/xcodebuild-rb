@@ -3,6 +3,24 @@ require 'spec_helper'
 describe XcodeBuild::BuildReporter do
   let(:reporter) { XcodeBuild::BuildReporter.new }
   
+  shared_examples_for "any build" do
+    it "reports the build target" do
+      reporter.build_target.should == "ExampleProject"
+    end
+    
+    it "reports the project name" do
+      reporter.project_name.should == "ExampleProject"
+    end
+    
+    it "reports the build configuration" do
+      reporter.build_configuration.should == "Release"
+    end
+    
+    it "reports if the build configuration was the default" do
+      reporter.was_default_build_configuration?.should == true
+    end
+  end
+  
   context "for a simple, successful build" do
     before do
       event({:build_started=>
@@ -40,24 +58,10 @@ describe XcodeBuild::BuildReporter do
       reporter.build_successful?.should be_true
     end
     
+    it_behaves_like "any build"
+    
     it "reports the total number of completed build actions" do
       reporter.should have(3).build_actions_completed
-    end
-    
-    it "reports the build target" do
-      reporter.build_target.should == "ExampleProject"
-    end
-    
-    it "reports the project name" do
-      reporter.project_name.should == "ExampleProject"
-    end
-    
-    it "reports the build configuration" do
-      reporter.build_configuration.should == "Release"
-    end
-    
-    it "repoerts if the build configuration was the default" do
-      reporter.was_default_build_configuration?.should == true
     end
   end
   
