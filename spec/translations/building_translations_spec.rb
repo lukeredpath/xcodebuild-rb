@@ -93,14 +93,15 @@ describe XcodeBuild::OutputTranslator do
       arguments: ["build/Debug-iphoneos/ExampleProject.app"]
     )
     translator << "The following build commands failed:"
-    translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
+    translator << "\tCodeSign build/Debug-iphoneos/ExampleProject.app"
+    translator << "(2 failures)"
   end
   
   it "treats :build_action_failed as an optional delegate message" do
     delegate_should_not_respond_to(:build_action_failed)
     delegate.should_not_receive(:build_action_failed)
     translator << "The following build commands failed:"
-    translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
+    translator << "\tCodeSign build/Debug-iphoneos/ExampleProject.app"
   end
   
   it "notifies the delegate of errors that occur throughout the build" do

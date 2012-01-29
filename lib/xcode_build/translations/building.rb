@@ -14,7 +14,11 @@ module XcodeBuild
         end
 
         if @beginning_error_report
-          notify_build_action_failed(line)
+          if line =~ /^\(\d+ failures\)/
+            @beginning_error_report = false
+          else
+            notify_build_action_failed(line)
+          end
         end
 
         case line
@@ -77,7 +81,7 @@ module XcodeBuild
       end
 
       def build_action_from_line(line)
-        parts = line.split(" ")
+        parts = line.strip.split(" ")
         {type: parts.shift, arguments: parts}
       end
     end

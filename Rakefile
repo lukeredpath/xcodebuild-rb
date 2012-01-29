@@ -72,6 +72,14 @@ class SimpleFormatter
   end
 end
 
+class NullFormatter
+  def respond_to?(method)
+    true
+  end
+  def method_missing(*args)
+  end
+end
+
 task :clean_example do
   Dir.chdir("resources/ExampleProject") do
     puts "➜ Cleaning"

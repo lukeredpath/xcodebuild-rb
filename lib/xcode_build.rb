@@ -1,6 +1,6 @@
 module XcodeBuild
   def self.run(args = "", output_buffer = STDOUT)
-    IO.popen("xcodebuild #{args}", err: [:child, :out]) do |io|
+    IO.popen("xcodebuild #{args} 2>&1") do |io|
       begin
         while line = io.readline
           begin
