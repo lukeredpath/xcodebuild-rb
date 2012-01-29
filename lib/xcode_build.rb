@@ -3,7 +3,11 @@ module XcodeBuild
     IO.popen("xcodebuild #{args}", err: [:child, :out]) do |io|
       begin
         while line = io.readline
-          output_buffer << line
+          begin
+            output_buffer << line
+          rescue StandardError => e
+            puts "Error from output buffer: #{e.inspect}"
+          end
         end
       rescue EOFError
       end
@@ -12,3 +16,4 @@ module XcodeBuild
 end
 
 require_relative 'xcode_build/output_translator'
+require_relative 'xcode_build/build_reporter'
