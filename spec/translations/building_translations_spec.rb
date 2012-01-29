@@ -103,6 +103,51 @@ describe XcodeBuild::OutputTranslator do
     translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
   end
   
+  it "notifies the delegate of errors that occur throughout the build" do
+    delegate.should_receive(:build_error_detected).with(
+           file: "/ExampleProject/main.m", 
+           line: 16,
+           char: 42,
+        message: "expected ';' after expression [1]"
+    )
+    translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+  end
+  
+  it "notifies the delegate of errors for different build actions" do
+    delegate.should_receive(:build_error_detected).with(
+           file: "/ExampleProject/main.m", 
+           line: 16,
+           char: 42,
+        message: "expected ';' after expression [1]"
+    )
+    
+    translator << "CompileC ExampleProject/main.m normal"
+    translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    translator << "1 error generated."
+  end
+  
+  it "notifies the delegate of multiple errors for the same build action" do
+    delegate.should_receive(:build_error_detected).with(
+           file: "/ExampleProject/main.m", 
+           line: 16,
+           char: 42,
+        message: "expected ';' after expression [1]"
+    ).twice
+    
+    translator << "CompileC ExampleProject/main.m normal"
+    translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    translator << ""
+    translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    translator << ""
+    translator << "2 errors generated."
+  end
+  
+  it "treats :build_error_detected as an optional delegate message" do
+    delegate_should_not_respond_to(:build_error_detected)
+    delegate.should_not_receive(:build_error_detected)
+    translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+  end
+  
   private
   
   def delegate_should_respond_to(method)

@@ -20,15 +20,17 @@ module XcodeBuild
         case line
         when /^\=\=\= BUILD/
           notify_build_started(line)
+        when /^(.*):(\d+):(\d+): error: (.*)$/
+          notify_build_error($1, $2, $3, $4)
         when /^The following build commands failed:/
           @beginning_error_report = true
         when /^\n/
           @beginning_build_action = true
         end
       end
-      
+
       private
-      
+
       def notify_build_started(line)
         target = line.match(/TARGET (\w+)/)[1]
         project = line.match(/PROJECT (\w+)/)[1]
@@ -53,6 +55,15 @@ module XcodeBuild
         notify_delegate(:build_action, args: [build_action_from_line(line)])
       end
 
+      def notify_build_error(file, line, char, message)
+        notify_delegate(:build_error_detected, args: [{
+             file: file,
+             line: line.to_i,
+             char: char.to_i,
+          message: message
+        }])
+      end
+
       def notify_build_ended(result)
         if result =~ /SUCCEEDED/
           notify_delegate(:build_succeeded, required: true)
@@ -70,7 +81,7 @@ module XcodeBuild
         {type: parts.shift, arguments: parts}
       end
     end
-    
+
     register_translation :building, Building
   end
 end
