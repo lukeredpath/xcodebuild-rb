@@ -10,3 +10,5 @@ module XcodeBuild
     end
   end
 end
+
+require_relative 'xcode_build/output_translator'

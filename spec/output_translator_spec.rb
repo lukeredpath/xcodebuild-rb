@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'xcode_build/output_translator'
 
 describe XcodeBuild::OutputTranslator do
   let(:delegate)   { mock('delegate') }

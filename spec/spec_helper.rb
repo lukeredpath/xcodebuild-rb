@@ -13,3 +13,5 @@ RSpec.configure do |config|
 end
 
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'xcodebuild'
