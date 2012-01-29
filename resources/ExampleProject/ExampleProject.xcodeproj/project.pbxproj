@@ -393,6 +393,60 @@
 			};
 			name = Release;
 		};
+		A3C32E1914D45AF50017FAED /* AlwaysFails */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = AlwaysFails;
+		};
+		A3C32E1A14D45AF50017FAED /* AlwaysFails */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ExampleProject/ExampleProject-Prefix.pch";
+				INFOPLIST_FILE = "ExampleProject/ExampleProject-Info.plist";
+				OTHER_CFLAGS = "-DALWAYS_FAIL";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = AlwaysFails;
+		};
+		A3C32E1B14D45AF50017FAED /* AlwaysFails */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ExampleProject.app/ExampleProject";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ExampleProject/ExampleProject-Prefix.pch";
+				INFOPLIST_FILE = "ExampleProjectTests/ExampleProjectTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = AlwaysFails;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -400,6 +454,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A3C32E0914D4496B0017FAED /* Debug */,
+				A3C32E1914D45AF50017FAED /* AlwaysFails */,
 				A3C32E0A14D4496B0017FAED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -409,17 +464,21 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A3C32E0C14D4496B0017FAED /* Debug */,
+				A3C32E1A14D45AF50017FAED /* AlwaysFails */,
 				A3C32E0D14D4496B0017FAED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A3C32E0E14D4496B0017FAED /* Build configuration list for PBXNativeTarget "ExampleProjectTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A3C32E0F14D4496B0017FAED /* Debug */,
+				A3C32E1B14D45AF50017FAED /* AlwaysFails */,
 				A3C32E1014D4496B0017FAED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

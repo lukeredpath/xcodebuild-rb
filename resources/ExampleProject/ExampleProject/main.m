@@ -12,6 +12,10 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef ALWAYS_FAIL
+  puts("Holy missing semi-colon Batman!")
+#endif
+  
   @autoreleasepool {
       return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
   }
