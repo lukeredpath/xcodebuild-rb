@@ -4,13 +4,25 @@ require 'ostruct'
 module XcodeBuild
   class BuildReporter
     attr_reader :build
+    attr_accessor :delegate
+    
+    def initialize(delegate = nil)
+      @delegate = delegate
+    end
 
     def build_started(params)
       @build = Build.new(params)
+      notify :build_started, @build
     end
 
     def build_action(params)
+      if @build.last_action
+        notify :build_action_finished, @build.last_action
+      end
+      
       @build.add_action(params)
+      
+      notify :build_action_started, @build.last_action
     end
 
     def build_error_detected(params)
@@ -18,10 +30,12 @@ module XcodeBuild
     end
 
     def build_succeeded
+      build_finished
       @build.success!
     end
 
     def build_failed
+      build_finished
       @build.failure!
     end
 
@@ -30,6 +44,19 @@ module XcodeBuild
     end
     
     private
+    
+    def build_finished
+      if @build.last_action
+        notify :build_action_finished, @build.last_action
+      end
+      
+      notify :build_finished, @build
+    end
+    
+    def notify(event, *args)
+      return unless @delegate
+      @delegate.send(event, *args) if @delegate.respond_to?(event)
+    end
     
     class Build
       attr_reader :actions_completed

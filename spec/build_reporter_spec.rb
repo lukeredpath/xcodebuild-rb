@@ -21,7 +21,98 @@ describe XcodeBuild::BuildReporter do
     end
   end
   
-  context "for a started build" do
+  context "when receiving events" do
+    let(:delegate) { mock('reporter delegate').as_null_object }
+    
+    before do
+      reporter.delegate = delegate
+      
+      # let's assume it responds to all delegate methods
+      delegate.stub(:respond_to?).with(anything).and_return(true)
+    end
+    
+    it "notifies it's delegate that a build has started" do
+      delegate.should_receive(:build_started).with instance_of(XcodeBuild::BuildReporter::Build)
+      
+      event({:build_started=>
+        {:target=>"ExampleProject",
+         :project=>"ExampleProject",
+         :configuration=>"Release",
+         :default=>true}})
+    end
+    
+    it "notifies it's delegate when a build action begins" do
+      assume_build_started
+      
+      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::BuildReporter::BuildAction)
+      
+      event({:build_action=>
+        {:type=>"CpResource",
+         :arguments=>
+          ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
+           "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
+    end
+    
+    it "notifies it's delegate when a previous build action finishes" do
+      assume_build_started
+
+      event({:build_action=>
+        {:type=>"CpResource",
+         :arguments=>
+          ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
+           "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
+           
+      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+           
+      event({:build_action=>
+        {:type=>"CpResource",
+         :arguments=>
+          ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
+           "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
+    end
+    
+    it "notifies it's delegate when the last build action finishes and the build is successful" do
+      assume_build_started
+
+      event({:build_action=>
+        {:type=>"CpResource",
+         :arguments=>
+          ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
+           "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
+           
+      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+           
+      event({:build_succeeded=>{}})
+    end
+    
+    it "notifies it's delegate when the last build action finishes and the build fails" do
+      assume_build_started
+
+      event({:build_action=>
+        {:type=>"CpResource",
+         :arguments=>
+          ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
+           "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
+           
+      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+           
+      event({:build_succeeded=>{}})
+    end
+    
+    it "notifies it's delegate that the build has finished when it is successful" do
+      assume_build_started
+      delegate.should_receive(:build_finished).with(reporter.build)
+      event({:build_succeeded=>{}})
+    end
+    
+    it "notifies it's delegate that the build has finished when it fails" do
+      assume_build_started
+      delegate.should_receive(:build_finished).with(reporter.build)
+      event({:build_failed=>{}})
+    end
+  end
+  
+  context "once a build has started" do
     before do
       event({:build_started=>
         {:target=>"ExampleProject",
@@ -39,7 +130,7 @@ describe XcodeBuild::BuildReporter do
     end
   end
   
-  context "for a simple, successful build" do
+  context "once a simple, successful build has finished" do
     before do
       event({:build_started=>
         {:target=>"ExampleProject",
@@ -91,7 +182,7 @@ describe XcodeBuild::BuildReporter do
     end
   end
   
-  context "for a simple, failed build" do
+  context "once a simple, failed build has finished" do
     before do
       event({:build_started=>
         {:target=>"ExampleProject",
@@ -139,6 +230,8 @@ describe XcodeBuild::BuildReporter do
            "com.apple.compilers.llvm.clang.1_0.compiler"]}})
     end
     
+    it_behaves_like "any build"
+    
     it "reports that the build was a failure" do
       reporter.build.should be_failed
     end
@@ -184,5 +277,13 @@ describe XcodeBuild::BuildReporter do
     else
       reporter.send(message)
     end
+  end
+  
+  def assume_build_started
+    event({:build_started=>
+      {:target=>"ExampleProject",
+       :project=>"ExampleProject",
+       :configuration=>"Release",
+       :default=>true}})
   end
 end
