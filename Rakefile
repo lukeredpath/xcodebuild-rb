@@ -4,6 +4,11 @@ $:.unshift("lib")
 require 'xcode_build'
 require 'xcode_build/output_translator'
 require 'pp'
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec
 
 class OutputFormatter
   def beginning_translation_of_line(line)
