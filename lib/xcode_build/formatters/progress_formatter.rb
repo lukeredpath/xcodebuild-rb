@@ -10,34 +10,44 @@ module XcodeBuild
         @output = output
       end
       
+      def clean_started(clean)
+        report_started("Cleaning", clean)
+      end
+      
+      def clean_action_finished(action)
+        report_action_finished(action)
+      end
+      
+      def clean_finished(clean)
+        report_finished("Clean", clean)
+      end
+      
       def build_started(build)
-        puts bold("Building target: #{build.target} (in #{build.project_name}.xcproject)")
-        puts
-        puts "Configuration: #{build.configuration}"
+        report_started("Building", build)
       end
       
       def build_action_finished(action)
-        if action.has_errors?
-          print red("F")
-        else
-          print green(".")
-        end
+        report_action_finished(action)
       end
       
       def build_finished(build)
+        report_finished("Build", build)
+      end
+      
+      def report_finished(type, object)
         puts
         puts
-        puts "Finished in #{build.duration} seconds."
+        puts "Finished in #{object.duration} seconds."
         
-        if build.successful?
-          puts green("Build succeeded.")
+        if object.successful?
+          puts green("#{type} succeeded.")
         else
-          puts red("Build failed.")
+          puts red("#{type} failed.")
           puts
-          puts "Failed build actions:"
+          puts "Failed #{type.downcase} actions:"
           puts
           error_counter = 1
-          build.actions_completed.each do |action|
+          object.actions_completed.each do |action|
             next unless action.has_errors?
             
             puts indent("#{error_counter}) #{action.type} #{action.arguments.join(" ")}")
@@ -52,12 +62,13 @@ module XcodeBuild
             error_counter += 1
           end
         end
+        puts
       end
       
       private
       
       def puts(str = "")
-        @output.puts(str)
+        @output.puts( str)
       end
       
       def color_enabled?
@@ -66,6 +77,23 @@ module XcodeBuild
       
       def indent(string)
         "  #{string}"
+      end
+      
+      def report_started(type, object)
+        puts
+        banner = "#{type} target: #{object.target} (in #{object.project_name}.xcproject)"
+        puts bold(banner)
+        puts banner.length.times.map { "=" }.join
+        puts
+        puts "Configuration: #{object.configuration}"
+      end
+      
+      def report_action_finished(action)
+        if action.has_errors?
+          print red("F")
+        else
+          print green(".")
+        end
       end
     end
   end

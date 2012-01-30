@@ -94,6 +94,10 @@ module XcodeBuild
           @metadata = metadata
         end
         
+        def has_errors?
+          false
+        end
+        
         def ==(other_action)
           (other_action.type == type &&
            other_action.arguments == arguments)

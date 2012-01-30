@@ -19,3 +19,7 @@ end
 require_relative 'xcode_build/output_translator'
 require_relative 'xcode_build/reporter'
 require_relative 'xcode_build/formatters'
+
+# configure the default translations for general use
+XcodeBuild::OutputTranslator.use_translation(:building)
+XcodeBuild::OutputTranslator.use_translation(:cleaning)

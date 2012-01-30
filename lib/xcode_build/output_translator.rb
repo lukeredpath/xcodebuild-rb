@@ -80,4 +80,3 @@ module XcodeBuild
   end
 end
 
-XcodeBuild::OutputTranslator.use_translation(:building)
