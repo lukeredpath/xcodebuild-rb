@@ -66,3 +66,8 @@ task :run_tests => :clean_example do
   end
 end
 
+task :simulate_clean_fail do
+  Rake::Task["examples:xcode:build"].invoke
+  FileUtils.chmod(000, "resources/ExampleProject/build/Release-iphoneos/ExampleProject.app")
+  Rake::Task["examples:xcode:clean"].invoke
+end

@@ -22,17 +22,35 @@ module XcodeBuild
         notify :clean_action_started, clean.last_action
       end
       
+      def clean_error_detected(params)
+        clean.last_action.add_error(params)
+      end
+      
       def clean_succeeded
+        clean.success!
+        clean_finished
+      end
+      
+      def clean_failed
+        clean.failure!
+        clean_finished
+      end
+      
+      def clean_action_failed(params)
+        if action = clean.action_with_params(params)
+          action.failed = true
+        end
+      end
+      
+      private
+      
+      def clean_finished
         if clean.last_action
           notify :clean_action_finished, clean.last_action
         end
         
-        clean.success!
-        
         notify :clean_finished, clean
       end
-      
-      private
       
       class Clean
         attr_reader :actions_completed
@@ -50,8 +68,12 @@ module XcodeBuild
             transition :running => :successful
           end
 
-          after_transition :running => :successful do |build|
-            build.finished_at = Time.now
+          event :failure do
+            transition :running => :failed
+          end
+
+          after_transition :running => [:successful, :failed] do |clean|
+            clean.finished_at = Time.now
           end
         end
         
@@ -63,8 +85,16 @@ module XcodeBuild
           @actions_completed.last
         end
         
+        def failed_actions
+          @actions_completed.select { |a| a.failed? }
+        end
+        
+        def action_with_params(params)
+          @actions_completed.detect { |a| a == CleanAction.new(params) }
+        end
+        
         def finished?
-          successful?
+          successful? || failed?
         end
         
         def duration
@@ -90,17 +120,29 @@ module XcodeBuild
       end
       
       class CleanAction
+        attr_reader :errors
+        attr_writer :failed
+        
         def initialize(metadata)
           @metadata = metadata
+          @errors = []
         end
         
+        def add_error(params)
+          @errors << CleanError.new(params)
+        end
+
         def has_errors?
-          false
+          @errors.any?
         end
         
         def ==(other_action)
           (other_action.type == type &&
            other_action.arguments == arguments)
+        end
+        
+        def failed?
+          @failed
         end
         
         def type
@@ -110,6 +152,9 @@ module XcodeBuild
         def arguments
           @metadata[:arguments]
         end
+      end
+      
+      class CleanError < OpenStruct
       end
     end
   end

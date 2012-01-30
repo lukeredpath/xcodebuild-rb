@@ -19,7 +19,19 @@ module XcodeBuild
           return
         end
         
+        if @beginning_error_report
+          if line =~ /^\(\d+ failure(s?)\)/
+            @beginning_error_report = false
+          else
+            notify_clean_action_failed(line)
+          end
+        end
+        
         case line
+        when /^error: (.*)$/
+          notify_clean_error($1)
+        when /^The following build commands failed:/
+          @beginning_error_report = true
         when /^\n/
           @beginning_clean_action = true
         end
@@ -55,6 +67,14 @@ module XcodeBuild
       
       def notify_clean_action(line)
         notify_delegate(:clean_action, args: [clean_action_from_line(line)])
+      end
+      
+      def notify_clean_action_failed(line)
+        notify_delegate(:clean_action_failed, args: [clean_action_from_line(line)])
+      end
+      
+      def notify_clean_error(message)
+        notify_delegate(:clean_error_detected, args: [{message: message}])
       end
       
       def notify_clean_ended(result)

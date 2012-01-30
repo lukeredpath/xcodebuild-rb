@@ -20,7 +20,7 @@ module XcodeBuild
         end
 
         if @beginning_error_report
-          if line =~ /^\(\d+ failures\)/
+          if line =~ /^\(\d+ failure(s?)\)/
             @beginning_error_report = false
           else
             notify_build_action_failed(line)

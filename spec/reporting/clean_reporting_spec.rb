@@ -85,10 +85,30 @@ describe XcodeBuild::Reporting::CleanReporting do
       event({:clean_succeeded=>{}})
     end
     
+    it "notifies it's delegate when the last clean action finishes and the clean fails" do
+      assume_clean_started
+
+      event({:clean_action=>
+        {:type=>"Clean.Remove",
+         :arguments=>
+          ["clean",
+           "build/Release-iphoneos/ExampleProject.app"]}})
+           
+      delegate.should_receive(:clean_action_finished).with reporter.clean.last_action
+           
+      event({:clean_failed=>{}})
+    end
+    
     it "notifies it's delegate that the clean has finished when it is successful" do
       assume_clean_started
       delegate.should_receive(:clean_finished).with(reporter.clean)
       event({:clean_succeeded=>{}})
+    end
+    
+    it "notifies it's delegate that the clean has finished when it fails" do
+      assume_clean_started
+      delegate.should_receive(:clean_finished).with(reporter.clean)
+      event({:clean_failed=>{}})
     end
     
     it "tracks the time a clean takes" do
@@ -157,6 +177,71 @@ describe XcodeBuild::Reporting::CleanReporting do
     
     it "reports the total number of completed clean actions" do
       reporter.clean.should have(2).actions_completed
+    end
+    
+    it "reports that the clean is not running" do
+      reporter.clean.should_not be_running
+    end
+    
+    it "reports that the clean is finished" do
+      reporter.clean.should be_finished
+    end
+  end
+  
+  context "once a simple, failed build has finished" do
+    before do
+      event({:clean_started=>
+        {:target=>"ExampleProject",
+         :project=>"ExampleProject",
+         :configuration=>"Release",
+         :default=>true}})
+         
+      event({:clean_action=>
+         {:type=>"Clean.Remove",
+          :arguments=>
+           ["clean",
+            "build/Release-iphoneos/FileOne"]}})
+            
+      event({:clean_error_detected=>
+         {:message=>"Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"}})
+           
+      event({:clean_action=>
+        {:type=>"Clean.Remove",
+         :arguments=>
+          ["clean",
+           "build/Release-iphoneos/FileTwo"]}})
+           
+      event({:clean_failed=>{}})
+      
+      event({:clean_action_failed=>
+        {:type=>"Clean.Remove",
+          :arguments=>
+           ["clean",
+            "build/Release-iphoneos/FileOne"]}})
+    end
+    
+    it_behaves_like "any clean"
+    
+    it "reports that the clean was a failure" do
+      reporter.clean.should be_failed
+    end
+    
+    it "reports the total number of completed clean actions" do
+      reporter.clean.should have(2).actions_completed
+    end
+    
+    it "reports the total number of failed clean actions" do
+      reporter.clean.should have(1).failed_actions
+      reporter.clean.failed_actions.first.tap do |action|
+        action.type.should == "Clean.Remove"
+      end
+    end
+    
+    it "reports the errors for each failed clean action" do
+      reporter.clean.failed_actions.first.should have(1).errors
+      reporter.clean.failed_actions.first.errors.first.tap do |error|
+        error.message.should == "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
+      end
     end
     
     it "reports that the clean is not running" do
