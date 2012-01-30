@@ -1,3 +1,5 @@
+source :rubygems
+
 gem "state_machine"
 
 group :development do
