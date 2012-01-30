@@ -44,7 +44,7 @@ describe XcodeBuild::Reporting::CleanReporting do
     it "notifies it's delegate when a clean action begins" do
       assume_clean_started
       
-      delegate.should_receive(:clean_action_started).with instance_of(XcodeBuild::Reporting::CleanReporting::CleanAction)
+      delegate.should_receive(:clean_action_started).with instance_of(XcodeBuild::CommandAction)
       
       event({:clean_action=>
         {:type=>"Clean.Remove",

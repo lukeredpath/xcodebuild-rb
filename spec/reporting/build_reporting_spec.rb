@@ -44,7 +44,7 @@ describe XcodeBuild::Reporting::BuildReporting do
     it "notifies it's delegate when a build action begins" do
       assume_build_started
       
-      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::Reporting::BuildReporting::BuildAction)
+      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::CommandAction)
       
       event({:build_action=>
         {:type=>"CpResource",
