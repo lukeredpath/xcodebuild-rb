@@ -59,22 +59,10 @@ namespace :examples do
   end
 end
 
-task :clean_example do
+task :run_tests => :clean_example do
   Dir.chdir("resources/ExampleProject") do
-    XcodeBuild.run("clean", File.open("/dev/null", "w"))
+    reporter = OutputFormatter.new
+    XcodeBuild.run("-target ExampleProjectTests -sdk iphonesimulator5.0 TEST_HOST=", XcodeBuild::OutputTranslator.new(reporter))
   end
 end
 
-task :build_example => :clean_example do
-  Dir.chdir("resources/ExampleProject") do
-    formatter = InspectorFormatter.new
-    XcodeBuild.run("", XcodeBuild::OutputTranslator.new(formatter))
-  end
-end
-
-task :build_example_and_fail => :clean_example do
-  Dir.chdir("resources/ExampleProject") do
-    formatter = InspectorFormatter.new
-    XcodeBuild.run("-configuration AlwaysFails", XcodeBuild::OutputTranslator.new(formatter))
-  end
-end
