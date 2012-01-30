@@ -15,7 +15,7 @@ After installing the gem, you need to create a `Rakefile` in the root of your pr
 A simple Rakefile will look like this:
 
     require 'rubygems'
-    require 'xcodebuild-rb'
+    require 'xcodebuild'
     
     XcodeBuild::Tasks::BuildTask.new
 
