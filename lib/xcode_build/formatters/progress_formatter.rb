@@ -51,11 +51,10 @@ module XcodeBuild
             next unless step.has_errors?
             
             puts indent("#{error_counter}) #{step.type} #{step.arguments.join(" ")}")
-            puts
 
             step.errors.each do |err|
               puts indent("   #{red(err.message)}")
-              puts indent(cyan("   in #{err.file}:#{err.line.to_s}"))
+              puts indent(cyan("   in #{err.file}:#{err.line.to_s}")) if err.file
               puts
             end
             
