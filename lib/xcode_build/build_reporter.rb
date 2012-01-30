@@ -30,13 +30,13 @@ module XcodeBuild
     end
 
     def build_succeeded
-      build_finished
       @build.success!
+      build_finished
     end
 
     def build_failed
-      build_finished
       @build.failure!
+      build_finished
     end
 
     def build_action_failed(params)
