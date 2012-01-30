@@ -13,9 +13,9 @@ module XcodeBuild
           return
         end
 
-        if @beginning_build_action
-          @beginning_build_action = false
-          notify_build_action(line) unless line.strip.empty?
+        if @beginning_build_step
+          @beginning_build_step = false
+          notify_build_step(line) unless line.strip.empty?
           return
         end
 
@@ -23,7 +23,7 @@ module XcodeBuild
           if line =~ /^\(\d+ failure(s?)\)/
             @beginning_error_report = false
           else
-            notify_build_action_failed(line)
+            notify_build_step_failed(line)
           end
         end
 
@@ -33,7 +33,7 @@ module XcodeBuild
         when /^The following build commands failed:/
           @beginning_error_report = true
         when /^\n/
-          @beginning_build_action = true
+          @beginning_build_step = true
         end
       end
       
@@ -65,8 +65,8 @@ module XcodeBuild
         }])
       end
 
-      def notify_build_action(line)
-        notify_delegate(:build_action, args: [build_action_from_line(line)])
+      def notify_build_step(line)
+        notify_delegate(:build_step, args: [build_step_from_line(line)])
       end
 
       def notify_build_error(file, line, char, message)
@@ -86,11 +86,11 @@ module XcodeBuild
         end
       end
 
-      def notify_build_action_failed(line)
-        notify_delegate(:build_action_failed, args: [build_action_from_line(line)])
+      def notify_build_step_failed(line)
+        notify_delegate(:build_step_failed, args: [build_step_from_line(line)])
       end
 
-      def build_action_from_line(line)
+      def build_step_from_line(line)
         parts = line.strip.split(" ")
         {type: parts.shift, arguments: parts}
       end

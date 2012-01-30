@@ -53,8 +53,8 @@ describe XcodeBuild::OutputTranslator do
       translation.stub(:cleaning?).and_return(true)
     end
 
-    it "notifies the delegate of a single clean action" do
-      delegate.should_receive(:clean_action).with(
+    it "notifies the delegate of a single clean step" do
+      delegate.should_receive(:clean_step).with(
              type: "Clean.Remove",
         arguments: ["clean", "build/Release-iphoneos/ExampleProject.app"]
       )
@@ -76,8 +76,8 @@ describe XcodeBuild::OutputTranslator do
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
     end
 
-    it "notifies the delegate of clean action failures" do
-      delegate.should_receive(:clean_action_failed).with(
+    it "notifies the delegate of clean step failures" do
+      delegate.should_receive(:clean_step_failed).with(
              type: "Clean.Remove",
         arguments: ["clean", "build/Release-iphoneos/ExampleProject.app"]
       )
@@ -86,15 +86,15 @@ describe XcodeBuild::OutputTranslator do
       translator << "(1 failure)"
     end
 
-    it "treats :clean_action_failed as an optional delegate message" do
-      delegate_should_not_respond_to(:clean_action_failed)
-      delegate.should_not_receive(:clean_action_failed)
+    it "treats :clean_step_failed as an optional delegate message" do
+      delegate_should_not_respond_to(:clean_step_failed)
+      delegate.should_not_receive(:clean_step_failed)
       translator << "The following build commands failed:"
       translator << "\tClean.Remove clean build/Release-iphoneos/ExampleProject.app"
       translator << "(1 failure)"
     end
 
-    it "notifies the delegate of errors for different clean actions" do
+    it "notifies the delegate of errors for different clean steps" do
       delegate.should_receive(:clean_error_detected).with(
           message: "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
       )
@@ -105,7 +105,7 @@ describe XcodeBuild::OutputTranslator do
       translator << ""
     end
 
-    it "notifies the delegate of multiple errors for the same clean action" do
+    it "notifies the delegate of multiple errors for the same clean step" do
       delegate.should_receive(:clean_error_detected).with(
           message: "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
       ).twice

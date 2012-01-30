@@ -14,18 +14,18 @@ module XcodeBuild
         notify :build_started, @build
       end
 
-      def build_action(params)
-        if @build.last_action
-          notify :build_action_finished, @build.last_action
+      def build_step(params)
+        if @build.last_step
+          notify :build_step_finished, @build.last_step
         end
 
-        @build.add_action(params)
+        @build.add_step(params)
 
-        notify :build_action_started, @build.last_action
+        notify :build_step_started, @build.last_step
       end
 
       def build_error_detected(params)
-        @build.last_action.add_error(params)
+        @build.last_step.add_error(params)
       end
 
       def build_succeeded
@@ -38,23 +38,23 @@ module XcodeBuild
         build_finished
       end
 
-      def build_action_failed(params)
-        if action = @build.action_with_params(params)
-          action.failed = true
+      def build_step_failed(params)
+        if step = @build.step_with_params(params)
+          step.failed = true
         end
       end
       
       private
 
       def build_finished
-        if @build.last_action
-          notify :build_action_finished, @build.last_action
+        if @build.last_step
+          notify :build_step_finished, @build.last_step
         end
 
         notify :build_finished, @build
       end
       
-      class Build < Command
+      class Build < BuildAction
       end
     end
   end

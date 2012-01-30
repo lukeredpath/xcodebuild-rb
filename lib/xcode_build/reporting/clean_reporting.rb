@@ -12,18 +12,18 @@ module XcodeBuild
         notify :clean_started, @clean
       end
       
-      def clean_action(params)
-        if clean.last_action
-          notify :clean_action_finished, clean.last_action
+      def clean_step(params)
+        if clean.last_step
+          notify :clean_step_finished, clean.last_step
         end
 
-        clean.add_action(params)
+        clean.add_step(params)
 
-        notify :clean_action_started, clean.last_action
+        notify :clean_step_started, clean.last_step
       end
       
       def clean_error_detected(params)
-        clean.last_action.add_error(params)
+        clean.last_step.add_error(params)
       end
       
       def clean_succeeded
@@ -36,23 +36,23 @@ module XcodeBuild
         clean_finished
       end
       
-      def clean_action_failed(params)
-        if action = clean.action_with_params(params)
-          action.failed = true
+      def clean_step_failed(params)
+        if step = clean.step_with_params(params)
+          step.failed = true
         end
       end
       
       private
       
       def clean_finished
-        if clean.last_action
-          notify :clean_action_finished, clean.last_action
+        if clean.last_step
+          notify :clean_step_finished, clean.last_step
         end
         
         notify :clean_finished, clean
       end
       
-      class Clean < Command
+      class Clean < BuildAction
       end
     end
   end

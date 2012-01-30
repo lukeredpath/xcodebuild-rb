@@ -1,7 +1,7 @@
 require "ostruct"
 
 module XcodeBuild
-  class CommandAction
+  class BuildStep
     attr_accessor :failed
     attr_reader :errors
 

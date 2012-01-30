@@ -41,60 +41,60 @@ describe XcodeBuild::Reporting::BuildReporting do
          :default=>true}})
     end
     
-    it "notifies it's delegate when a build action begins" do
+    it "notifies it's delegate when a build step begins" do
       assume_build_started
       
-      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::CommandAction)
+      delegate.should_receive(:build_step_started).with instance_of(XcodeBuild::BuildStep)
       
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
     end
     
-    it "notifies it's delegate when a previous build action finishes" do
+    it "notifies it's delegate when a previous build step finishes" do
       assume_build_started
 
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
            
-      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+      delegate.should_receive(:build_step_finished).with reporter.build.last_step
            
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
     end
     
-    it "notifies it's delegate when the last build action finishes and the build is successful" do
+    it "notifies it's delegate when the last build step finishes and the build is successful" do
       assume_build_started
 
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
            
-      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+      delegate.should_receive(:build_step_finished).with reporter.build.last_step
            
       event({:build_succeeded=>{}})
     end
     
-    it "notifies it's delegate when the last build action finishes and the build fails" do
+    it "notifies it's delegate when the last build step finishes and the build fails" do
       assume_build_started
 
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
            
-      delegate.should_receive(:build_action_finished).with reporter.build.last_action
+      delegate.should_receive(:build_step_finished).with reporter.build.last_step
            
       event({:build_succeeded=>{}})
     end
@@ -154,19 +154,19 @@ describe XcodeBuild::Reporting::BuildReporting do
          :configuration=>"Release",
          :default=>true}})
          
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CpResource",
          :arguments=>
           ["/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ResourceRules.plist",
            "build/Release-iphoneos/ExampleProject.app/ResourceRules.plist"]}})
            
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"ProcessInfoPlistFile",
          :arguments=>
           ["build/Release-iphoneos/ExampleProject.app/Info.plist",
            "ExampleProject/ExampleProject-Info.plist"]}})
            
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CompileC",
          :arguments=>
           ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
@@ -185,8 +185,8 @@ describe XcodeBuild::Reporting::BuildReporting do
       reporter.build.should be_successful
     end
     
-    it "reports the total number of completed build actions" do
-      reporter.build.should have(3).actions_completed
+    it "reports the total number of completed build steps" do
+      reporter.build.should have(3).steps_completed
     end
     
     it "reports that the build is not running" do
@@ -206,7 +206,7 @@ describe XcodeBuild::Reporting::BuildReporting do
          :configuration=>"Release",
          :default=>true}})
 
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CompileC",
          :arguments=>
           ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
@@ -223,7 +223,7 @@ describe XcodeBuild::Reporting::BuildReporting do
           :char=>42,
           :message=>"expected ';' after expression [1]"}})
       
-      event({:build_action=>
+      event({:build_step=>
         {:type=>"CompileC",
          :arguments=>
           ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
@@ -235,7 +235,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            
       event({:build_failed=>{}})
       
-      event({:build_action_failed=>
+      event({:build_step_failed=>
         {:type=>"CompileC",
          :arguments=>
           ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
@@ -252,20 +252,20 @@ describe XcodeBuild::Reporting::BuildReporting do
       reporter.build.should be_failed
     end
     
-    it "reports the total number of completed build actions" do
-      reporter.build.should have(2).actions_completed
+    it "reports the total number of completed build steps" do
+      reporter.build.should have(2).steps_completed
     end
     
-    it "reports the total number of failed build actions" do
-      reporter.build.should have(1).failed_actions
-      reporter.build.failed_actions.first.tap do |action|
-        action.type.should == "CompileC"
+    it "reports the total number of failed build steps" do
+      reporter.build.should have(1).failed_steps
+      reporter.build.failed_steps.first.tap do |step|
+        step.type.should == "CompileC"
       end
     end
     
-    it "reports the errors for each failed build action" do
-      reporter.build.failed_actions.first.should have(1).errors
-      reporter.build.failed_actions.first.errors.first.tap do |error|
+    it "reports the errors for each failed build step" do
+      reporter.build.failed_steps.first.should have(1).errors
+      reporter.build.failed_steps.first.errors.first.tap do |error|
         error.file.should == "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m"
         error.line.should == 16
         error.char.should == 42

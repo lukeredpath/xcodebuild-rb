@@ -24,7 +24,12 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testSuccess
+{
+  STAssertEqualObjects(@"foo", @"foo", @"Objects didn't match");
+}
+
+- (void)testFailure
 {
     STFail(@"Unit tests are not implemented yet in ExampleProjectTests");
 }

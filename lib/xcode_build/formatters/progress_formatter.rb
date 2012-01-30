@@ -14,8 +14,8 @@ module XcodeBuild
         report_started("Cleaning", clean)
       end
       
-      def clean_action_finished(action)
-        report_action_finished(action)
+      def clean_step_finished(step)
+        report_step_finished(step)
       end
       
       def clean_finished(clean)
@@ -26,8 +26,8 @@ module XcodeBuild
         report_started("Building", build)
       end
       
-      def build_action_finished(action)
-        report_action_finished(action)
+      def build_step_finished(step)
+        report_step_finished(step)
       end
       
       def build_finished(build)
@@ -44,16 +44,16 @@ module XcodeBuild
         else
           puts red("#{type} failed.")
           puts
-          puts "Failed #{type.downcase} actions:"
+          puts "Failed #{type.downcase} steps:"
           puts
           error_counter = 1
-          object.actions_completed.each do |action|
-            next unless action.has_errors?
+          object.steps_completed.each do |step|
+            next unless step.has_errors?
             
-            puts indent("#{error_counter}) #{action.type} #{action.arguments.join(" ")}")
+            puts indent("#{error_counter}) #{step.type} #{step.arguments.join(" ")}")
             puts
 
-            action.errors.each do |err|
+            step.errors.each do |err|
               puts indent("   #{red(err.message)}")
               puts indent(cyan("   in #{err.file}:#{err.line.to_s}"))
               puts
@@ -88,8 +88,8 @@ module XcodeBuild
         puts "Configuration: #{object.configuration}"
       end
       
-      def report_action_finished(action)
-        if action.has_errors?
+      def report_step_finished(step)
+        if step.has_errors?
           print red("F")
         else
           print green(".")

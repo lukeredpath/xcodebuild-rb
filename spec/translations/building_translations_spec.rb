@@ -55,9 +55,9 @@ describe XcodeBuild::Translations::Building do
       translation.stub(:building?).and_return(true)
     end
     
-    it "notifies the delegate of a single build action" do
+    it "notifies the delegate of a single build step" do
       delegate.stub(:beginning_translation_of_line)
-      delegate.should_receive(:build_action).with(
+      delegate.should_receive(:build_step).with(
              type: "CodeSign", 
         arguments: ["build/Debug-iphoneos/ExampleProject.app"]
       )
@@ -66,8 +66,8 @@ describe XcodeBuild::Translations::Building do
     end
 
     it "treats :beginning_translation_of_line as an optional delegate message" do
-      delegate_should_not_respond_to(:build_action)
-      delegate.should_not_receive(:build_action)
+      delegate_should_not_respond_to(:build_step)
+      delegate.should_not_receive(:build_step)
       translator << "\n"
       translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
     end
@@ -102,8 +102,8 @@ describe XcodeBuild::Translations::Building do
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
     end
 
-    it "notifies the delegate of build action failures" do
-      delegate.should_receive(:build_action_failed).with(
+    it "notifies the delegate of build step failures" do
+      delegate.should_receive(:build_step_failed).with(
              type: "CodeSign", 
         arguments: ["build/Debug-iphoneos/ExampleProject.app"]
       )
@@ -112,9 +112,9 @@ describe XcodeBuild::Translations::Building do
       translator << "(2 failures)"
     end
 
-    it "treats :build_action_failed as an optional delegate message" do
-      delegate_should_not_respond_to(:build_action_failed)
-      delegate.should_not_receive(:build_action_failed)
+    it "treats :build_step_failed as an optional delegate message" do
+      delegate_should_not_respond_to(:build_step_failed)
+      delegate.should_not_receive(:build_step_failed)
       translator << "The following build commands failed:"
       translator << "\tCodeSign build/Debug-iphoneos/ExampleProject.app"
     end
@@ -129,7 +129,7 @@ describe XcodeBuild::Translations::Building do
       translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
     end
 
-    it "notifies the delegate of errors for different build actions" do
+    it "notifies the delegate of errors for different build steps" do
       delegate.should_receive(:build_error_detected).with(
              file: "/ExampleProject/main.m", 
              line: 16,
@@ -142,7 +142,7 @@ describe XcodeBuild::Translations::Building do
       translator << "1 error generated."
     end
 
-    it "notifies the delegate of multiple errors for the same build action" do
+    it "notifies the delegate of multiple errors for the same build step" do
       delegate.should_receive(:build_error_detected).with(
              file: "/ExampleProject/main.m", 
              line: 16,

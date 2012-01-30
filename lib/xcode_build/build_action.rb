@@ -1,14 +1,14 @@
 require 'state_machine'
 
-require_relative "command_action"
+require_relative "build_step"
 
 module XcodeBuild
-  class Command
-    attr_reader :actions_completed
+  class BuildAction
+    attr_reader :steps_completed
     attr_writer :finished_at
 
     def initialize(metadata)
-      @actions_completed = []
+      @steps_completed = []
       @metadata = metadata
       @started_at = Time.now
       super
@@ -28,20 +28,20 @@ module XcodeBuild
       end
     end
 
-    def add_action(params)
-      @actions_completed << CommandAction.new(params)
+    def add_step(params)
+      @steps_completed << BuildStep.new(params)
     end
 
-    def failed_actions
-      @actions_completed.select { |a| a.failed? }
+    def failed_steps
+      @steps_completed.select { |a| a.failed? }
     end
 
-    def action_with_params(params)
-      @actions_completed.detect { |a| a == CommandAction.new(params) }
+    def step_with_params(params)
+      @steps_completed.detect { |a| a == BuildStep.new(params) }
     end
 
-    def last_action
-      @actions_completed.last
+    def last_step
+      @steps_completed.last
     end
 
     def finished?

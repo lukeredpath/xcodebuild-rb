@@ -41,60 +41,60 @@ describe XcodeBuild::Reporting::CleanReporting do
          :default=>true}})
     end
     
-    it "notifies it's delegate when a clean action begins" do
+    it "notifies it's delegate when a clean step begins" do
       assume_clean_started
       
-      delegate.should_receive(:clean_action_started).with instance_of(XcodeBuild::CommandAction)
+      delegate.should_receive(:clean_step_started).with instance_of(XcodeBuild::BuildStep)
       
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
            "build/Release-iphoneos/ExampleProject.app"]}})
     end
     
-    it "notifies it's delegate when a previous clean action finishes" do
+    it "notifies it's delegate when a previous clean step finishes" do
       assume_clean_started
 
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
            "build/Release-iphoneos/ExampleProject.app"]}})
            
-      delegate.should_receive(:clean_action_finished).with reporter.clean.last_action
+      delegate.should_receive(:clean_step_finished).with reporter.clean.last_step
            
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
            "build/Release-iphoneos/ExampleProject.app"]}})
     end
     
-    it "notifies it's delegate when the last clean action finishes and the clean is successful" do
+    it "notifies it's delegate when the last clean step finishes and the clean is successful" do
       assume_clean_started
 
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
            "build/Release-iphoneos/ExampleProject.app"]}})
            
-      delegate.should_receive(:clean_action_finished).with reporter.clean.last_action
+      delegate.should_receive(:clean_step_finished).with reporter.clean.last_step
            
       event({:clean_succeeded=>{}})
     end
     
-    it "notifies it's delegate when the last clean action finishes and the clean fails" do
+    it "notifies it's delegate when the last clean step finishes and the clean fails" do
       assume_clean_started
 
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
            "build/Release-iphoneos/ExampleProject.app"]}})
            
-      delegate.should_receive(:clean_action_finished).with reporter.clean.last_action
+      delegate.should_receive(:clean_step_finished).with reporter.clean.last_step
            
       event({:clean_failed=>{}})
     end
@@ -154,13 +154,13 @@ describe XcodeBuild::Reporting::CleanReporting do
          :configuration=>"Release",
          :default=>true}})
          
-      event({:clean_action=>
+      event({:clean_step=>
          {:type=>"Clean.Remove",
           :arguments=>
            ["clean",
             "build/Release-iphoneos/FileOne"]}})
            
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
@@ -175,8 +175,8 @@ describe XcodeBuild::Reporting::CleanReporting do
       reporter.clean.should be_successful
     end
     
-    it "reports the total number of completed clean actions" do
-      reporter.clean.should have(2).actions_completed
+    it "reports the total number of completed clean steps" do
+      reporter.clean.should have(2).steps_completed
     end
     
     it "reports that the clean is not running" do
@@ -196,7 +196,7 @@ describe XcodeBuild::Reporting::CleanReporting do
          :configuration=>"Release",
          :default=>true}})
          
-      event({:clean_action=>
+      event({:clean_step=>
          {:type=>"Clean.Remove",
           :arguments=>
            ["clean",
@@ -205,7 +205,7 @@ describe XcodeBuild::Reporting::CleanReporting do
       event({:clean_error_detected=>
          {:message=>"Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"}})
            
-      event({:clean_action=>
+      event({:clean_step=>
         {:type=>"Clean.Remove",
          :arguments=>
           ["clean",
@@ -213,7 +213,7 @@ describe XcodeBuild::Reporting::CleanReporting do
            
       event({:clean_failed=>{}})
       
-      event({:clean_action_failed=>
+      event({:clean_step_failed=>
         {:type=>"Clean.Remove",
           :arguments=>
            ["clean",
@@ -226,20 +226,20 @@ describe XcodeBuild::Reporting::CleanReporting do
       reporter.clean.should be_failed
     end
     
-    it "reports the total number of completed clean actions" do
-      reporter.clean.should have(2).actions_completed
+    it "reports the total number of completed clean steps" do
+      reporter.clean.should have(2).steps_completed
     end
     
-    it "reports the total number of failed clean actions" do
-      reporter.clean.should have(1).failed_actions
-      reporter.clean.failed_actions.first.tap do |action|
-        action.type.should == "Clean.Remove"
+    it "reports the total number of failed clean steps" do
+      reporter.clean.should have(1).failed_steps
+      reporter.clean.failed_steps.first.tap do |step|
+        step.type.should == "Clean.Remove"
       end
     end
     
-    it "reports the errors for each failed clean action" do
-      reporter.clean.failed_actions.first.should have(1).errors
-      reporter.clean.failed_actions.first.errors.first.tap do |error|
+    it "reports the errors for each failed clean step" do
+      reporter.clean.failed_steps.first.should have(1).errors
+      reporter.clean.failed_steps.first.errors.first.tap do |error|
         error.message.should == "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
       end
     end

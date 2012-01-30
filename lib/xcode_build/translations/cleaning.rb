@@ -13,9 +13,9 @@ module XcodeBuild
           return
         end
         
-        if @beginning_clean_action
-          @beginning_clean_action = false
-          notify_clean_action(line) unless line.strip.empty?
+        if @beginning_clean_step
+          @beginning_clean_step = false
+          notify_clean_step(line) unless line.strip.empty?
           return
         end
         
@@ -23,7 +23,7 @@ module XcodeBuild
           if line =~ /^\(\d+ failure(s?)\)/
             @beginning_error_report = false
           else
-            notify_clean_action_failed(line)
+            notify_clean_step_failed(line)
           end
         end
         
@@ -33,7 +33,7 @@ module XcodeBuild
         when /^The following build commands failed:/
           @beginning_error_report = true
         when /^\n/
-          @beginning_clean_action = true
+          @beginning_clean_step = true
         end
       end
 
@@ -65,12 +65,12 @@ module XcodeBuild
         }])
       end
       
-      def notify_clean_action(line)
-        notify_delegate(:clean_action, args: [clean_action_from_line(line)])
+      def notify_clean_step(line)
+        notify_delegate(:clean_step, args: [clean_step_from_line(line)])
       end
       
-      def notify_clean_action_failed(line)
-        notify_delegate(:clean_action_failed, args: [clean_action_from_line(line)])
+      def notify_clean_step_failed(line)
+        notify_delegate(:clean_step_failed, args: [clean_step_from_line(line)])
       end
       
       def notify_clean_error(message)
@@ -83,7 +83,7 @@ module XcodeBuild
         end
       end
       
-      def clean_action_from_line(line)
+      def clean_step_from_line(line)
         parts = line.strip.split(" ")
         {type: parts.shift, arguments: parts}
       end
