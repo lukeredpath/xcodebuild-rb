@@ -3,7 +3,7 @@ require_relative 'translations'
 
 module XcodeBuild
   class OutputTranslator
-    attr_reader :translations
+    attr_reader :translations, :delegate
     
     def initialize(delegate, options = {})
       @delegate = delegate

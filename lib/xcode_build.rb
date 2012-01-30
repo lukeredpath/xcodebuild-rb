@@ -7,6 +7,7 @@ module XcodeBuild
             output_buffer << line
           rescue StandardError => e
             puts "Error from output buffer: #{e.inspect}"
+            puts e.backtrace
           end
         end
       rescue EOFError
@@ -17,3 +18,4 @@ end
 
 require_relative 'xcode_build/output_translator'
 require_relative 'xcode_build/build_reporter'
+require_relative 'xcode_build/formatters'

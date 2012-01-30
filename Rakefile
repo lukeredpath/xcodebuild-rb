@@ -3,6 +3,7 @@ $:.unshift("lib")
 
 require 'xcode_build'
 require 'xcode_build/output_translator'
+require 'xcode_build/tasks/build_task'
 require 'pp'
 require 'rspec/core/rake_task'
 
@@ -48,6 +49,13 @@ class InspectorFormatter
   
   def build_action_failed(params)
     pp({build_action_failed: params})
+  end
+end
+
+namespace :examples do
+  XcodeBuild::Tasks::BuildTask.new do |t|
+    t.invoke_from_within = "resources/ExampleProject"
+    t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
   end
 end
 
