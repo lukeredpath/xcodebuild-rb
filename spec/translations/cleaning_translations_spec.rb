@@ -61,6 +61,20 @@ describe XcodeBuild::OutputTranslator do
       translator << "\n"
       translator << "Clean.Remove clean build/Release-iphoneos/ExampleProject.app"
     end
+    
+    it "notifies the delegate when the clean failed" do
+      delegate.should_receive(:clean_failed)
+      translator << "\n\n\n"
+      translator << "** CLEAN FAILED **"
+    end
+
+    it "treats :clean_failed as a required delegate message and raise if it doesn't respond" do
+      delegate_should_not_respond_to(:clean_failed)
+      -> { 
+        translator << "** CLEAN FAILED **"
+
+      }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
+    end
 
     it "notifies the delegate when the clean succeeded" do
       delegate.should_receive(:clean_succeeded)

@@ -80,6 +80,8 @@ module XcodeBuild
       def notify_clean_ended(result)
         if result =~ /SUCCEEDED/
           notify_delegate(:clean_succeeded, required: true)
+        else
+          notify_delegate(:clean_failed, required: true)
         end
       end
       
