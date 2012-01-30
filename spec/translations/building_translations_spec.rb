@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe XcodeBuild::OutputTranslator do
   let(:delegate)   { mock('delegate') }
-  let(:translator) { XcodeBuild::OutputTranslator.new(delegate) }
+  let(:translator) { XcodeBuild::OutputTranslator.new(delegate, ignore_global_translations: true) }
   
   before do
-    delegate.stub(:respond_to?).with(anything).and_return(true)
+    translator.use_translation XcodeBuild::Translations::Building
+    
     delegate_should_respond_to(:beginning_translation_of_line)
     delegate.stub(:beginning_translation_of_line).and_return(true)
+    delegate.stub(:respond_to?).with(anything).and_return(true)
   end
   
   it "notifies the delegate of the start of a build with the default configuration" do
