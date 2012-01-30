@@ -51,43 +51,8 @@ class InspectorFormatter
   end
 end
 
-class SimpleFormatter
-  def build_started(params)
-    puts "➜ Build started (#{params.inspect})"
-  end
-  
-  def build_action(params)
-    print "."
-  end
-  
-  def build_succeeded
-    build_finished
-    puts "➜ Build succeeded."
-  end
-  
-  def build_failed
-    build_finished
-    puts "➜ Build failed."
-  end
-  
-  private
-  
-  def build_finished
-    puts
-  end
-end
-
-class NullFormatter
-  def respond_to?(method)
-    true
-  end
-  def method_missing(*args)
-  end
-end
-
 task :clean_example do
   Dir.chdir("resources/ExampleProject") do
-    puts "➜ Cleaning"
     XcodeBuild.run("clean", File.open("/dev/null", "w"))
   end
 end
