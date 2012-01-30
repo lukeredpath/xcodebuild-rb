@@ -2,6 +2,12 @@ module XcodeBuild
   module Translations
     module Building
       def attempt_to_translate(line)
+        if line =~ /^\=\=\= BUILD/
+          notify_build_started(line)
+        end
+        
+        return unless building?
+        
         if line =~ /^\*\* BUILD (\w+) \*\*/
           notify_build_ended($1)
           return
@@ -22,8 +28,6 @@ module XcodeBuild
         end
 
         case line
-        when /^\=\=\= BUILD/
-          notify_build_started(line)
         when /^(.*):(\d+):(\d+): error: (.*)$/
           notify_build_error($1, $2, $3, $4)
         when /^The following build commands failed:/
@@ -32,10 +36,16 @@ module XcodeBuild
           @beginning_build_action = true
         end
       end
+      
+      def building?
+        @building
+      end
 
       private
 
       def notify_build_started(line)
+        @building = true
+        
         target = line.match(/TARGET (\w+)/)[1]
         project = line.match(/PROJECT (\w+)/)[1]
 

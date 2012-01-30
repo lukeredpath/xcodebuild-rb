@@ -126,8 +126,9 @@ describe XcodeBuild::Tasks::BuildTask do
   context "cleanbuild task" do
     it "runs the clean task and then the build task" do
       task = XcodeBuild::Tasks::BuildTask.new
-      XcodeBuild.should_receive(:run).with("clean", anything())
-      XcodeBuild.should_receive(:run).with("", anything())
+      XcodeBuild.should_receive(:run).with("clean", anything()) do
+        XcodeBuild.should_receive(:run).with("", anything())
+      end
       task.run(:cleanbuild)
     end
   end

@@ -17,3 +17,15 @@ $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require 'xcodebuild'
 require 'chronic'
 require 'timecop'
+
+def delegate_should_respond_to(method)
+  mock_should_respond?(delegate, method, true)
+end
+
+def delegate_should_not_respond_to(method)
+  mock_should_respond?(delegate, method, false)
+end
+
+def mock_should_respond?(mock, method, should_respond)
+  mock.stub(:respond_to?).with(method).and_return(should_respond)
+end
