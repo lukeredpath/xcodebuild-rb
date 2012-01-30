@@ -1,6 +1,7 @@
 # encoding: UTF-8
 $:.unshift("lib")
 
+require "bundler/setup"
 require 'xcode_build'
 require 'xcode_build/output_translator'
 require 'xcode_build/tasks/build_task'
@@ -116,7 +117,8 @@ spec = Gem::Specification.new do |s|
 
   # If your tests use any gems, include them here
   s.add_development_dependency("rspec")
-  s.add_development_dependency("rake")
+  s.add_development_dependency("rake", "~> 0.9.2.2")
+  s.add_development_dependency("rdoc", "~> 3.12")
   s.add_development_dependency("guard-rspec")
   s.add_development_dependency("growl")
   s.add_development_dependency("timecop")
@@ -157,4 +159,9 @@ end
 desc 'Clear out RDoc and generated packages'
 task :clean => [:clobber_rdoc, :clobber_package] do
   rm "#{spec.name}.gemspec"
+end
+
+desc "Bundle the gems from the gemspec"
+task :bundle => :gemspec do
+  system "bundle install"
 end
