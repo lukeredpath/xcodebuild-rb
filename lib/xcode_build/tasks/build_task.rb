@@ -45,8 +45,8 @@ module XcodeBuild
       
       def output_buffer
         if formatter
-          build_reporter = XcodeBuild::BuildReporter.new(formatter)
-          XcodeBuild::OutputTranslator.new(build_reporter)
+          reporter = XcodeBuild::Reporter.new(formatter)
+          XcodeBuild::OutputTranslator.new(reporter)
         else
           output_to
         end

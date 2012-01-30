@@ -94,13 +94,13 @@ describe XcodeBuild::Tasks::BuildTask do
       task.run(:build)
     end
     
-    it "outputs the translator delegating to the build reporter if formatter is set" do
+    it "outputs the translator delegating to the reporter if formatter is set" do
       formatter = stub('formatter')
       task = XcodeBuild::Tasks::BuildTask.new do |t|
         t.formatter = formatter
       end
       XcodeBuild.should_receive(:run).with(anything(),
-        output_translator_delegating_to(instance_of(XcodeBuild::BuildReporter)))
+        output_translator_delegating_to(instance_of(XcodeBuild::Reporter)))
       task.run(:build)
     end
     

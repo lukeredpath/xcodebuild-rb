@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe XcodeBuild::BuildReporter do
-  let(:reporter) { XcodeBuild::BuildReporter.new }
+describe XcodeBuild::Reporting::BuildReporting do
+  let(:reporter) { XcodeBuild::Reporter.new }
   
   shared_examples_for "any build" do
     it "reports the build target" do
@@ -32,7 +32,7 @@ describe XcodeBuild::BuildReporter do
     end
     
     it "notifies it's delegate that a build has started" do
-      delegate.should_receive(:build_started).with instance_of(XcodeBuild::BuildReporter::Build)
+      delegate.should_receive(:build_started).with instance_of(XcodeBuild::Reporting::BuildReporting::Build)
       
       event({:build_started=>
         {:target=>"ExampleProject",
@@ -44,7 +44,7 @@ describe XcodeBuild::BuildReporter do
     it "notifies it's delegate when a build action begins" do
       assume_build_started
       
-      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::BuildReporter::BuildAction)
+      delegate.should_receive(:build_action_started).with instance_of(XcodeBuild::Reporting::BuildReporting::BuildAction)
       
       event({:build_action=>
         {:type=>"CpResource",

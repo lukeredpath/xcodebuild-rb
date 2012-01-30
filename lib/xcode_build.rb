@@ -17,5 +17,5 @@ module XcodeBuild
 end
 
 require_relative 'xcode_build/output_translator'
-require_relative 'xcode_build/build_reporter'
+require_relative 'xcode_build/reporter'
 require_relative 'xcode_build/formatters'
