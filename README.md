@@ -1,6 +1,6 @@
 # xcodebuild-rb: Building Xcode projects with Rake
 
-[![Build Status](https://secure.travis-ci.org/lukeredpath/xcodebuild.png)](http://travis-ci.org/lukeredpath/xcodebuild])
+[![Build Status](https://secure.travis-ci.org/lukeredpath/xcodebuild-rb.png)](http://travis-ci.org/lukeredpath/xcodebuild-rb])
 
 xcodebuild-rb is a RubyGem that provides a Ruby interface to the `xcodebuild` utility that ships with Xcode in the form of a series of Rake tasks. This gem only supports Xcode 4 (you can try it with 3.x, but YMMV). It makes it simple to run your builds from the command line, especially on remote machines such as Continuous Integration servers.
 
