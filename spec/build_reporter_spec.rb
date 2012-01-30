@@ -110,6 +110,22 @@ describe XcodeBuild::BuildReporter do
       delegate.should_receive(:build_finished).with(reporter.build)
       event({:build_failed=>{}})
     end
+    
+    it "tracks the time a build takes" do
+      Timecop.travel(Chronic.parse("10 seconds ago")) do
+        event({:build_started=>
+          {:target=>"ExampleProject",
+           :project=>"ExampleProject",
+           :configuration=>"Release",
+           :default=>true}})
+           
+        Timecop.travel(Chronic.parse("5 seconds from now")) do
+          event({:build_succeeded=>{}})
+        end
+      end
+      
+      reporter.build.duration.should be_within(0.01).of(5)
+    end
   end
   
   context "once a build has started" do
