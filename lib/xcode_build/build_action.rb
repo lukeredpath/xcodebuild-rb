@@ -11,7 +11,7 @@ module XcodeBuild
       @steps_completed = []
       @metadata = metadata
       @started_at = Time.now
-      super
+      super()
     end
 
     state_machine :state, :initial => :running do
