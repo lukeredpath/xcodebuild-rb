@@ -40,7 +40,9 @@ module XcodeBuild
     end
 
     def build_action_failed(params)
-      @build.action_with_params(params).failed = true
+      if action = @build.action_with_params(params)
+        action.failed = true
+      end
     end
     
     private
