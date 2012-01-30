@@ -222,7 +222,7 @@ describe XcodeBuild::BuildReporter do
       event({:build_action_failed=>
         {:type=>"CompileC",
          :arguments=>
-          ["build/ExampleProject.build/AlwaysFails-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
+          ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/AppDelegate.o",
            "ExampleProject/AppDelegate.m",
            "normal",
            "armv7",

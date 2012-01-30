@@ -62,10 +62,12 @@ module XcodeBuild
     
     class Build
       attr_reader :actions_completed
+      attr_writer :finished_at
       
       def initialize(metadata)
         @actions_completed = []
         @metadata = metadata
+        @started_at = Time.now
         super
       end
       
@@ -76,6 +78,10 @@ module XcodeBuild
         
         event :failure do
           transition :running => :failed
+        end
+        
+        after_transition :running => [:successful, :failed] do |build|
+          build.finished_at = Time.now
         end
       end
       
@@ -97,6 +103,11 @@ module XcodeBuild
       
       def finished?
         successful? || failed?
+      end
+      
+      def duration
+        return nil unless finished?
+        @finished_at - @started_at
       end
       
       def project_name
@@ -129,21 +140,29 @@ module XcodeBuild
         @errors << BuildError.new(params)
       end
       
+      def has_errors?
+        @errors.any?
+      end
+      
       def ==(other_action)
         (other_action.type == type &&
-         other_action.args == args)
+         other_action.arguments == arguments)
       end
       
       def type
         @metadata[:type]
       end
       
-      def args
-        @metadata[:args]
+      def arguments
+        @metadata[:arguments]
       end
       
       def failed?
         @failed
+      end
+      
+      def inspect
+        [type, arguments]
       end
     end
     
