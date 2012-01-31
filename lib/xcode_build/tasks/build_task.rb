@@ -66,7 +66,7 @@ module XcodeBuild
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string, output_buffer)
             end
-            exit(status)
+            check_status(status)
           end
           
           desc "Cleans the build using the same build settings."
@@ -74,12 +74,16 @@ module XcodeBuild
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string("clean"), output_buffer)
             end
-            exit(status)
+            check_status(status)
           end
           
           desc "Builds the specified target(s) from a clean slate."
           task :cleanbuild => [:clean, :build]
         end
+      end
+      
+      def check_status(status)
+        raise "xcodebuild failed (exited with status: #{status})" unless status == 0
       end
     end
   end
