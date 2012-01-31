@@ -74,13 +74,14 @@ describe XcodeBuild::Tasks::BuildTask do
         task.project_name = "TestProject.xcproject"
         task.configuration = "Debug"
       end
-
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with(task.build_opts.join(" "), anything())
       task.run(:build)
     end
     
     it "defaults to outputting the raw output to STDOUT" do
       task = XcodeBuild::Tasks::BuildTask.new
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with(anything(), STDOUT)
       task.run(:build)
     end
@@ -90,6 +91,7 @@ describe XcodeBuild::Tasks::BuildTask do
       task = XcodeBuild::Tasks::BuildTask.new do |t|
         t.output_to = buffer
       end
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with(anything(), buffer)
       task.run(:build)
     end
@@ -99,6 +101,7 @@ describe XcodeBuild::Tasks::BuildTask do
       task = XcodeBuild::Tasks::BuildTask.new do |t|
         t.formatter = formatter
       end
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with(anything(),
         output_translator_delegating_to(instance_of(XcodeBuild::Reporter)))
       task.run(:build)
@@ -108,9 +111,17 @@ describe XcodeBuild::Tasks::BuildTask do
       task = XcodeBuild::Tasks::BuildTask.new do |task|
         task.invoke_from_within = "foo/bar"
       end
+      task.stub(:exit)
       
       Dir.should_receive(:chdir).with("foo/bar").and_yield
       XcodeBuild.should_receive(:run)
+      task.run(:build)
+    end
+    
+    it "calls exit with the xcodebuild return code" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      task.should_receive(:exit).with(0)
+      XcodeBuild.stub(:run).with(anything(), anything()).and_return(0)
       task.run(:build)
     end
   end
@@ -118,7 +129,15 @@ describe XcodeBuild::Tasks::BuildTask do
   context "clean task" do
     it "runs xcodebuild with the 'clean' action" do
       task = XcodeBuild::Tasks::BuildTask.new
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with("clean", anything())
+      task.run(:clean)
+    end
+    
+    it "calls exit with the xcodebuild return code" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      task.should_receive(:exit).with(0)
+      XcodeBuild.stub(:run).with(anything(), anything()).and_return(0)
       task.run(:clean)
     end
   end
@@ -126,6 +145,7 @@ describe XcodeBuild::Tasks::BuildTask do
   context "cleanbuild task" do
     it "runs the clean task and then the build task" do
       task = XcodeBuild::Tasks::BuildTask.new
+      task.stub(:exit)
       XcodeBuild.should_receive(:run).with("clean", anything()) do
         XcodeBuild.should_receive(:run).with("", anything())
       end

@@ -177,4 +177,3 @@ task :install => :package do
   gem_path = File.join('pkg', spec.file_name)
   system("gem install #{gem_path}")
 end
-
