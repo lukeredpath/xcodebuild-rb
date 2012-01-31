@@ -63,16 +63,18 @@ module XcodeBuild
         namespace(@namespace) do
           desc "Builds the specified target(s)."
           task :build do
-            Dir.chdir(invoke_from_within) do
+            status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string, output_buffer)
             end
+            exit(status)
           end
           
           desc "Cleans the build using the same build settings."
           task :clean do
-            Dir.chdir(invoke_from_within) do
+            status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string("clean"), output_buffer)
             end
+            exit(status)
           end
           
           desc "Builds the specified target(s) from a clean slate."

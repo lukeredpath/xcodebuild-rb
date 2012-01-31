@@ -13,6 +13,8 @@ module XcodeBuild
       rescue EOFError
       end
     end
+    
+    $?.exitstatus
   end
 end
 
