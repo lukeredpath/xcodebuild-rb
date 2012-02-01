@@ -11,6 +11,14 @@ module XcodeBuild
     def initialize(delegate = nil)
       @delegate = delegate
     end
+    
+    def direct_raw_output_to=(stream)
+      @output_stream = stream
+    end
+    
+    def beginning_translation_of_line(line)
+      (@output_stream << line) if @output_stream
+    end
 
     private
 

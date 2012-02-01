@@ -14,7 +14,6 @@ module XcodeBuild
       attr_accessor :output_to
       attr_accessor :formatter
       attr_accessor :invoke_from_within
-      attr_accessor :reporter
 
       def initialize(namespace = :xcode, &block)
         @namespace = namespace
@@ -44,15 +43,14 @@ module XcodeBuild
 
       private
       
-      def output_buffer
-        if reporter
-          XcodeBuild::OutputTranslator.new(reporter)
-        elsif formatter
-          default_reporter = XcodeBuild::Reporter.new(formatter)
-          XcodeBuild::OutputTranslator.new(default_reporter)
-        else
-          output_to
+      def reporter
+        @reporter ||= XcodeBuild::Reporter.new(formatter).tap do |r|
+          r.direct_raw_output_to = output_to unless formatter
         end
+      end
+      
+      def output_buffer
+        @output_buffer ||= XcodeBuild::OutputTranslator.new(reporter)
       end
       
       def build_opts_string(*additional_opts)
