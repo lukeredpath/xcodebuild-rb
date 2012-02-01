@@ -69,6 +69,10 @@ module XcodeBuild
         def set_environment_variable(key, value)
           @environment[key] = value
         end
+        
+        def target_build_directory
+          @environment["TARGET_BUILD_DIR"]
+        end
       end
     end
   end
