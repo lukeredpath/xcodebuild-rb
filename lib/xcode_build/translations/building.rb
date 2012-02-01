@@ -30,7 +30,7 @@ module XcodeBuild
         case line
         when /^(.*):(\d+):(\d+): error: (.*)$/
           notify_build_error($1, $2, $3, $4)
-        when /^\tsetenv (\w+) (.*)/
+        when /^\s+setenv (\w+) (.*)/
           notify_env_var($1, $2)
         when /^The following build commands failed:/
           @beginning_error_report = true

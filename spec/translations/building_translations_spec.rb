@@ -163,13 +163,13 @@ describe XcodeBuild::Translations::Building do
     
     it "notifies the delegate of any environment variables that the build outputs" do
       delegate.should_receive(:build_env_variable_detected).with("ARCHS", "armv7")
-      translator << "\tsetenv ARCHS armv7"
+      translator << "   setenv ARCHS armv7"
     end
     
     it "treats :build_env_variable_detected as an optional delegate message" do
       delegate_should_not_respond_to(:build_env_variable_detected)
       delegate.should_not_receive(:build_env_variable_detected)
-      translator << "\tsetenv ARCHS armv7"
+      translator << "   setenv ARCHS armv7"
     end
   end
 end
