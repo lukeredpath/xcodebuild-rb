@@ -27,6 +27,10 @@ module XcodeBuild
       def build_error_detected(params)
         @build.last_step.add_error(params)
       end
+      
+      def build_env_variable_detected(key, value)
+        @build.set_environment_variable(key, value)
+      end
 
       def build_succeeded
         @build.success!
@@ -55,6 +59,16 @@ module XcodeBuild
       end
       
       class Build < BuildAction
+        attr_reader :environment
+        
+        def initialize(metadata)
+          super(metadata)
+          @environment = {}
+        end
+        
+        def set_environment_variable(key, value)
+          @environment[key] = value
+        end
       end
     end
   end

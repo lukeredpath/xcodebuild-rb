@@ -126,6 +126,12 @@ describe XcodeBuild::Reporting::BuildReporting do
       
       reporter.build.duration.should be_within(0.01).of(5)
     end
+    
+    it "tracks any environment variables reported by the build" do
+      assume_build_started
+      event({:build_env_variable_detected=>["TEST_AFTER_BUILD", "YES"]})
+      reporter.build.environment["TEST_AFTER_BUILD"].should == "YES"
+    end
   end
   
   context "once a build has started" do
@@ -289,7 +295,11 @@ describe XcodeBuild::Reporting::BuildReporting do
     params = event_data.values.first
     
     if params.any?
-      reporter.send(message, params)
+      if params.is_a?(Hash)
+        reporter.send(message, params)
+      else
+        reporter.send(message, *params)
+      end
     else
       reporter.send(message)
     end

@@ -30,6 +30,8 @@ module XcodeBuild
         case line
         when /^(.*):(\d+):(\d+): error: (.*)$/
           notify_build_error($1, $2, $3, $4)
+        when /^\tsetenv (\w+) (.*)/
+          notify_env_var($1, $2)
         when /^The following build commands failed:/
           @beginning_error_report = true
         when /^\n/
@@ -88,6 +90,10 @@ module XcodeBuild
 
       def notify_build_step_failed(line)
         notify_delegate(:build_step_failed, args: [build_step_from_line(line)])
+      end
+      
+      def notify_env_var(key, value)
+        notify_delegate(:build_env_variable_detected, args:[key, value])
       end
 
       def build_step_from_line(line)

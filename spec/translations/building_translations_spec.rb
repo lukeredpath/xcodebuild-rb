@@ -56,7 +56,6 @@ describe XcodeBuild::Translations::Building do
     end
     
     it "notifies the delegate of a single build step" do
-      delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_step).with(
              type: "CodeSign", 
         arguments: ["build/Debug-iphoneos/ExampleProject.app"]
@@ -65,7 +64,7 @@ describe XcodeBuild::Translations::Building do
       translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
     end
 
-    it "treats :beginning_translation_of_line as an optional delegate message" do
+    it "treats :build_step as an optional delegate message" do
       delegate_should_not_respond_to(:build_step)
       delegate.should_not_receive(:build_step)
       translator << "\n"
@@ -73,7 +72,6 @@ describe XcodeBuild::Translations::Building do
     end
 
     it "notifies the delegate when the build failed" do
-      delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_failed)
       translator << "\n\n\n"
       translator << "** BUILD FAILED **"
@@ -88,7 +86,6 @@ describe XcodeBuild::Translations::Building do
     end
 
     it "notifies the delegate when the build succeeded" do
-      delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_succeeded)
       translator << "\n\n\n"
       translator << "** BUILD SUCCEEDED **"
@@ -162,6 +159,17 @@ describe XcodeBuild::Translations::Building do
       delegate_should_not_respond_to(:build_error_detected)
       delegate.should_not_receive(:build_error_detected)
       translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    end
+    
+    it "notifies the delegate of any environment variables that the build outputs" do
+      delegate.should_receive(:build_env_variable_detected).with("ARCHS", "armv7")
+      translator << "\tsetenv ARCHS armv7"
+    end
+    
+    it "treats :build_env_variable_detected as an optional delegate message" do
+      delegate_should_not_respond_to(:build_env_variable_detected)
+      delegate.should_not_receive(:build_env_variable_detected)
+      translator << "\tsetenv ARCHS armv7"
     end
   end
 end

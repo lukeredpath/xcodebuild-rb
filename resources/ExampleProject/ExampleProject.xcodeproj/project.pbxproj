@@ -153,6 +153,7 @@
 				A3C32DDA14D4496A0017FAED /* Sources */,
 				A3C32DDB14D4496A0017FAED /* Frameworks */,
 				A3C32DDC14D4496A0017FAED /* Resources */,
+				A3B2931014D8C2A400C6B79F /* Run Script Phase */,
 			);
 			buildRules = (
 			);
@@ -229,6 +230,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		A3B2931014D8C2A400C6B79F /* Run Script Phase */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script Phase";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
 		A3C32DF714D4496B0017FAED /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
