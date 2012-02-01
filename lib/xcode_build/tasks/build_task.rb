@@ -40,14 +40,12 @@ module XcodeBuild
           opts << "-xcconfig #{xcconfig}" if xcconfig
         end
       end
-
-      private
       
       def reporter
-        @reporter ||= XcodeBuild::Reporter.new(formatter).tap do |r|
-          r.direct_raw_output_to = output_to unless formatter
-        end
+        @reporter ||= XcodeBuild::Reporter.new(formatter)
       end
+
+      private
       
       def output_buffer
         @output_buffer ||= XcodeBuild::OutputTranslator.new(reporter)
@@ -61,6 +59,8 @@ module XcodeBuild
         namespace(@namespace) do
           desc "Builds the specified target(s)."
           task :build do
+            reporter.direct_raw_output_to = output_to unless formatter
+            
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string, output_buffer)
             end
@@ -69,6 +69,8 @@ module XcodeBuild
           
           desc "Cleans the build using the same build settings."
           task :clean do
+            reporter.direct_raw_output_to = output_to unless formatter
+            
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string("clean"), output_buffer)
             end

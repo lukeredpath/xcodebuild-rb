@@ -67,44 +67,39 @@ describe XcodeBuild::Tasks::BuildTask do
       task.build_opts.should include("-xcconfig path/to/config.xcconfig")
     end
   end
-
-  context "build task" do
-    it "runs xcodebuild with the configured build_opts" do
-      task = XcodeBuild::Tasks::BuildTask.new do |task|
-        task.project_name = "TestProject.xcproject"
-        task.configuration = "Debug"
-      end
-      
-      XcodeBuild.should_receive(:run).with(task.build_opts.join(" "), anything()).and_return(0)
-      task.run(:build)
-    end
-    
-    it "defaults to outputting the raw output to STDOUT" do
+  
+  shared_examples_for "any task" do
+    it "directs xcodebuild output into the translator" do
       task = XcodeBuild::Tasks::BuildTask.new
-      
-      XcodeBuild.should_receive(:run).with(anything(), STDOUT).and_return(0)
-      task.run(:build)
+      XcodeBuild.should_receive(:run).with(anything, instance_of(XcodeBuild::OutputTranslator)).and_return(0)
+      task.run(task_name)
     end
     
-    it "uses a custom output buffer if specified" do
+    it "uses a custom output buffer if specified and a formatter has not been set" do
       buffer = stub('output buffer')
       task = XcodeBuild::Tasks::BuildTask.new do |t|
+        t.formatter = nil
         t.output_to = buffer
       end
-      
-      XcodeBuild.should_receive(:run).with(anything(), buffer).and_return(0)
-      task.run(:build)
+      task.reporter.should_receive(:direct_raw_output_to=).with(buffer)
+      XcodeBuild.stub(:run).with(anything, anything).and_return(0)
+      task.run(task_name)
     end
     
-    it "outputs the translator delegating to the reporter if formatter is set" do
-      formatter = stub('formatter')
+    it "ignores the value of output_to if a formatter has been set" do
       task = XcodeBuild::Tasks::BuildTask.new do |t|
-        t.formatter = formatter
+        t.formatter = stub('formatter')
+        t.output_to = stub('output buffer')
       end
-      
-      XcodeBuild.should_receive(:run).with(anything(),
-        output_translator_delegating_to(instance_of(XcodeBuild::Reporter))).and_return(0)
-      task.run(:build)
+      task.reporter.should_not_receive(:direct_raw_output_to=).with(anything)
+      XcodeBuild.stub(:run).with(anything, anything).and_return(0)
+      task.run(task_name)
+    end
+    
+    it "raises if xcodebuild returns a non-zero exit code" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      XcodeBuild.stub(:run).with(anything, anything).and_return(99)
+      -> { task.run(task_name) }.should raise_error
     end
     
     it "changes directory if invoke_from_within is set" do
@@ -114,27 +109,35 @@ describe XcodeBuild::Tasks::BuildTask do
       
       Dir.should_receive(:chdir).with("foo/bar").and_yield
       XcodeBuild.should_receive(:run).and_return(0)
-      task.run(:build)
+      task.run(task_name)
     end
+  end
+
+  context "build task" do
+    let(:task_name) { :build }
     
-    it "raises if xcodebuild returns a non-zero exit code" do
-      task = XcodeBuild::Tasks::BuildTask.new
-      XcodeBuild.stub(:run).with(anything(), anything()).and_return(99)
-      -> { task.run(:build) }.should raise_error
+    it_behaves_like "any task"
+    
+    it "runs xcodebuild with the configured build_opts" do
+      task = XcodeBuild::Tasks::BuildTask.new do |task|
+        task.project_name = "TestProject.xcproject"
+        task.configuration = "Debug"
+      end
+      
+      XcodeBuild.should_receive(:run).with(task.build_opts.join(" "), anything).and_return(0)
+      task.run(:build)
     end
   end
   
   context "clean task" do
+    let(:task_name) { :clean }
+    
+    it_behaves_like "any task"
+    
     it "runs xcodebuild with the 'clean' action" do
       task = XcodeBuild::Tasks::BuildTask.new
-      XcodeBuild.should_receive(:run).with("clean", anything()).and_return(0)
+      XcodeBuild.should_receive(:run).with("clean", anything).and_return(0)
       task.run(:clean)
-    end
-    
-    it "raises if xcodebuild returns a non-zero exit code" do
-      task = XcodeBuild::Tasks::BuildTask.new
-      XcodeBuild.stub(:run).with(anything(), anything()).and_return(99)
-      -> { task.run(:build) }.should raise_error
     end
   end
   
@@ -142,8 +145,8 @@ describe XcodeBuild::Tasks::BuildTask do
     it "runs the clean task and then the build task" do
       task = XcodeBuild::Tasks::BuildTask.new
       
-      XcodeBuild.should_receive(:run).with("clean", anything()).ordered.and_return(0)
-      XcodeBuild.should_receive(:run).with("", anything()).ordered.and_return(0)
+      XcodeBuild.should_receive(:run).with("clean", anything).ordered.and_return(0)
+      XcodeBuild.should_receive(:run).with("", anything).ordered.and_return(0)
 
       task.run(:cleanbuild)
     end
