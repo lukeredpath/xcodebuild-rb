@@ -127,6 +127,23 @@ describe XcodeBuild::Tasks::BuildTask do
       XcodeBuild.should_receive(:run).with(task.build_opts.join(" "), anything).and_return(0)
       task.run(:build)
     end
+    
+    it "calls the after_build block after running successfully, passing in the build object from the report" do
+      received_build = nil
+      
+      task = XcodeBuild::Tasks::BuildTask.new do |task|
+        task.after_build do |build|
+          expected_build = build
+        end
+      end
+      
+      task.stub(:build).and_return(expected_build = stub('build'))
+      XcodeBuild.stub(:run).with(anything, anything).and_return(0)
+
+      task.run(:build)
+
+      expected_build.should == expected_build
+    end
   end
   
   context "clean task" do

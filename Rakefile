@@ -66,6 +66,9 @@ namespace :examples do
   XcodeBuild::Tasks::BuildTask.new do |t|
     t.invoke_from_within = "resources/ExampleProject"
     t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
+    t.after_build do |build|
+
+    end
   end
 end
 

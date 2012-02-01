@@ -23,6 +23,10 @@ module XcodeBuild
         yield self if block_given?
         define
       end
+      
+      def after_build(&block)
+        @after_build_block = block
+      end
 
       def run(task)
         Rake::Task["#{@namespace}:#{task}"].invoke
@@ -64,7 +68,10 @@ module XcodeBuild
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string, output_buffer)
             end
+            
             check_status(status)
+            
+            @after_build_block.call(reporter.build) if @after_build_block
           end
           
           desc "Cleans the build using the same build settings."
@@ -74,6 +81,7 @@ module XcodeBuild
             status = Dir.chdir(invoke_from_within) do
               XcodeBuild.run(build_opts_string("clean"), output_buffer)
             end
+            
             check_status(status)
           end
           
