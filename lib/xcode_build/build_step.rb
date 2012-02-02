@@ -11,6 +11,7 @@ module XcodeBuild
     end
 
     def add_error(params)
+      @failed = true
       @errors << Error.new(params)
     end
 

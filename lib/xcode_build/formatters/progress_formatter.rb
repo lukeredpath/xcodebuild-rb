@@ -39,7 +39,7 @@ module XcodeBuild
         puts
         puts "Finished in #{object.duration} seconds."
         
-        if object.successful?
+        if object.successful? && object.failed_steps.empty?
           puts green("#{object.label} succeeded.")
         else
           puts red("#{object.label} failed.")
