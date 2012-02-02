@@ -16,11 +16,13 @@ module XcodeBuild
       attr_accessor :output_to
       attr_accessor :formatter
       attr_accessor :invoke_from_within
+      attr_accessor :reporter_klass
 
       def initialize(namespace = :xcode, &block)
         @namespace = namespace
         @output_to = STDOUT
         @invoke_from_within = "."
+        @reporter_klass = XcodeBuild::Reporter
         
         yield self if block_given?
         define
@@ -48,7 +50,7 @@ module XcodeBuild
       end
       
       def reporter
-        @reporter ||= XcodeBuild::Reporter.new(formatter)
+        @reporter ||= @reporter_klass.new(formatter)
       end
 
       private
@@ -69,6 +71,11 @@ module XcodeBuild
         end
         
         check_status(status)
+        
+        if reporter.build.has_errors?
+          # sometimes, a build/archive can fail and xcodebuild won't return a non-zero code
+          raise "xcodebuild failed (#{reporter.build.failed_steps.length} steps failed)"
+        end
 
         @after_build_block.call(reporter.build) if !opt == 'clean' && @after_build_block
       end

@@ -47,6 +47,10 @@ module XcodeBuild
     def finished?
       successful? || failed?
     end
+    
+    def has_errors?
+      failed_steps.any?
+    end
 
     def duration
       return nil unless finished?

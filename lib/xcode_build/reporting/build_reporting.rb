@@ -34,7 +34,14 @@ module XcodeBuild
 
       def build_succeeded(archive_or_build)
         @build.label = archive_or_build
-        @build.success!
+        
+        # for some reason, archive reports a success even if there was an error
+        if build.has_errors?
+          @build.failure!
+        else
+          @build.success!
+        end
+        
         build_finished
       end
 
