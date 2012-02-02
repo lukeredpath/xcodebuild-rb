@@ -1,3 +1,9 @@
 #!/usr/bin/env ruby
-require_relative "../lib/xcodebuild"
+
+if __FILE__ == $0
+  require 'rubygems'
+  $:.unshift(File.expand_path('../../lib', __FILE__))
+end
+
+require "xcode_build"
 XcodeBuild.run(ARGV[0] || "")

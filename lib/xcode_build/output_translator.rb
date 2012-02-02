@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require_relative 'translations'
+require 'xcode_build/translations'
 
 module XcodeBuild
   class OutputTranslator
@@ -13,7 +13,7 @@ module XcodeBuild
     end
     
     def <<(line)
-      notify_delegate(:beginning_translation_of_line, args: line)
+      notify_delegate(:beginning_translation_of_line, :args => line)
       translations.each { |translation| translation.attempt_to_translate(line) }
     end
     
@@ -56,7 +56,8 @@ module XcodeBuild
     private
     
     module TranslationHelpers
-      def notify_delegate(message, options = {args: []})
+      def notify_delegate(message, options = {})
+        options[:args] ||= []
         if @delegate.respond_to?(message)
           @delegate.send(message, *options[:args])
         else

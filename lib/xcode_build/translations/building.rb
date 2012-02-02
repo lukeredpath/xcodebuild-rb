@@ -59,46 +59,46 @@ module XcodeBuild
           default = false
         end
 
-        notify_delegate(:build_started, required: true, args: [{
-                 target: target,
-                project: project,
-          configuration: configuration,
-                default: default
+        notify_delegate(:build_started, :required => true, :args => [{
+                 :target => target,
+                :project => project,
+          :configuration => configuration,
+                :default => default
         }])
       end
 
       def notify_build_step(line)
-        notify_delegate(:build_step, args: [build_step_from_line(line)])
+        notify_delegate(:build_step, :args => [build_step_from_line(line)])
       end
 
       def notify_build_error(file, line, char, message)
-        notify_delegate(:build_error_detected, args: [{
-             file: file,
-             line: line.to_i,
-             char: char.to_i,
-          message: message
+        notify_delegate(:build_error_detected, :args => [{
+             :file => file,
+             :line => line.to_i,
+             :char => char.to_i,
+          :message => message
         }])
       end
 
       def notify_build_ended(result)
         if result =~ /SUCCEEDED/
-          notify_delegate(:build_succeeded, required: true)
+          notify_delegate(:build_succeeded, :required => true)
         else
-          notify_delegate(:build_failed, required: true)
+          notify_delegate(:build_failed, :required => true)
         end
       end
 
       def notify_build_step_failed(line)
-        notify_delegate(:build_step_failed, args: [build_step_from_line(line)])
+        notify_delegate(:build_step_failed, :args => [build_step_from_line(line)])
       end
       
       def notify_env_var(key, value)
-        notify_delegate(:build_env_variable_detected, args:[key, value])
+        notify_delegate(:build_env_variable_detected, :args => [key, value])
       end
 
       def build_step_from_line(line)
         parts = line.strip.split(" ")
-        {type: parts.shift, arguments: parts}
+        {:type => parts.shift, :arguments => parts}
       end
     end
 

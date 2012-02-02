@@ -3,4 +3,4 @@ module XcodeBuild
   end
 end
 
-require_relative "formatters/progress_formatter"
+require "xcode_build/formatters/progress_formatter"

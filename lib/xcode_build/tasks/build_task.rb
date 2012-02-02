@@ -3,6 +3,8 @@ require 'rake/tasklib'
 module XcodeBuild
   module Tasks
     class BuildTask < ::Rake::TaskLib
+      include Rake::DSL if defined?(Rake::DSL)
+
       attr_accessor :project_name
       attr_accessor :target
       attr_accessor :workspace
@@ -56,33 +58,37 @@ module XcodeBuild
       end
       
       def build_opts_string(*additional_opts)
-        (build_opts + additional_opts).join(" ")
+        (build_opts + additional_opts).compact.join(" ")
+      end
+
+      def xcodebuild(opt = nil)
+        reporter.direct_raw_output_to = output_to unless formatter
+        
+        status = Dir.chdir(invoke_from_within) do
+          XcodeBuild.run(build_opts_string(opt), output_buffer)
+        end
+        
+        check_status(status)
+
+        @after_build_block.call(reporter.build) if !opt == 'clean' && @after_build_block
       end
 
       def define
         namespace(@namespace) do
+          desc "Creates an archive build of the specified target(s)."
+          task :archive do
+            raise "You need to specify a `scheme' in order to be able to create an archive build!" unless scheme
+            xcodebuild 'archive'
+          end
+
           desc "Builds the specified target(s)."
           task :build do
-            reporter.direct_raw_output_to = output_to unless formatter
-            
-            status = Dir.chdir(invoke_from_within) do
-              XcodeBuild.run(build_opts_string, output_buffer)
-            end
-            
-            check_status(status)
-            
-            @after_build_block.call(reporter.build) if @after_build_block
+            xcodebuild
           end
           
           desc "Cleans the build using the same build settings."
           task :clean do
-            reporter.direct_raw_output_to = output_to unless formatter
-            
-            status = Dir.chdir(invoke_from_within) do
-              XcodeBuild.run(build_opts_string("clean"), output_buffer)
-            end
-            
-            check_status(status)
+            xcodebuild 'clean'
           end
           
           desc "Builds the specified target(s) from a clean slate."

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe XcodeBuild::OutputTranslator do
   let(:delegate)   { mock('delegate', :respond_to? => true) }
-  let(:translator) { XcodeBuild::OutputTranslator.new(delegate, ignore_global_translations: true) }
+  let(:translator) { XcodeBuild::OutputTranslator.new(delegate, :ignore_global_translations => true) }
   let(:translation) { translator.translations[0] }
 
   before do
@@ -21,27 +21,27 @@ describe XcodeBuild::OutputTranslator do
 
     it "notifies the delegate of the start of a clean with the default configuration" do
       delegate.should_receive(:clean_started).with(
-                target: "ExampleProject",
-               project: "ExampleProject",
-         configuration: "Release",
-               default: true
+                :target => "ExampleProject",
+               :project => "ExampleProject",
+         :configuration => "Release",
+               :default => true
       )
       translator << "=== CLEAN NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE DEFAULT CONFIGURATION (Release) ==="
     end
 
     it "notifies the delegate of the start of a clean with a non-default configuration" do
       delegate.should_receive(:clean_started).with(
-                target: "ExampleProject",
-               project: "ExampleProject",
-         configuration: "Debug",
-               default: false
+                :target => "ExampleProject",
+               :project => "ExampleProject",
+         :configuration => "Debug",
+               :default => false
       )
       translator << "=== CLEAN NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
     end
 
     it "treats :clean_started as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:clean_started)
-      -> {
+      lambda {
         translator << "=== CLEAN NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -55,8 +55,8 @@ describe XcodeBuild::OutputTranslator do
 
     it "notifies the delegate of a single clean step" do
       delegate.should_receive(:clean_step).with(
-             type: "Clean.Remove",
-        arguments: ["clean", "build/Release-iphoneos/ExampleProject.app"]
+             :type => "Clean.Remove",
+        :arguments => ["clean", "build/Release-iphoneos/ExampleProject.app"]
       )
       translator << "\n"
       translator << "Clean.Remove clean build/Release-iphoneos/ExampleProject.app"
@@ -70,7 +70,7 @@ describe XcodeBuild::OutputTranslator do
 
     it "treats :clean_failed as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:clean_failed)
-      -> { 
+      lambda {
         translator << "** CLEAN FAILED **"
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -84,7 +84,7 @@ describe XcodeBuild::OutputTranslator do
 
     it "treats :clean_succeeded as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:clean_succeeded)
-      -> {
+      lambda {
         translator << "** CLEAN SUCCEEDED **"
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -92,8 +92,8 @@ describe XcodeBuild::OutputTranslator do
 
     it "notifies the delegate of clean step failures" do
       delegate.should_receive(:clean_step_failed).with(
-             type: "Clean.Remove",
-        arguments: ["clean", "build/Release-iphoneos/ExampleProject.app"]
+             :type => "Clean.Remove",
+        :arguments => ["clean", "build/Release-iphoneos/ExampleProject.app"]
       )
       translator << "The following build commands failed:"
       translator << "\tClean.Remove clean build/Release-iphoneos/ExampleProject.app"
@@ -110,7 +110,7 @@ describe XcodeBuild::OutputTranslator do
 
     it "notifies the delegate of errors for different clean steps" do
       delegate.should_receive(:clean_error_detected).with(
-          message: "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
+          :message => "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
       )
 
       translator << "Clean.Remove clean build/Release-iphoneos/ExampleProject.app"
@@ -121,7 +121,7 @@ describe XcodeBuild::OutputTranslator do
 
     it "notifies the delegate of multiple errors for the same clean step" do
       delegate.should_receive(:clean_error_detected).with(
-          message: "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
+          :message => "Error Domain=NSCocoaErrorDomain Code=513 ExampleProject couldn't be removed"
       ).twice
     
       translator << "Clean.Remove clean build/Release-iphoneos/ExampleProject.app"

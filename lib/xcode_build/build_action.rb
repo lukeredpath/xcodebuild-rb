@@ -1,6 +1,6 @@
 require 'state_machine'
 
-require_relative "build_step"
+require "xcode_build/build_step"
 
 module XcodeBuild
   class BuildAction
