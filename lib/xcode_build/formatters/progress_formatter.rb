@@ -19,7 +19,7 @@ module XcodeBuild
       end
       
       def clean_finished(clean)
-        report_finished("Clean", clean)
+        report_finished(clean)
       end
       
       def build_started(build)
@@ -31,20 +31,20 @@ module XcodeBuild
       end
       
       def build_finished(build)
-        report_finished("Build", build)
+        report_finished(build)
       end
       
-      def report_finished(type, object)
+      def report_finished(object)
         puts
         puts
         puts "Finished in #{object.duration} seconds."
         
         if object.successful?
-          puts green("#{type} succeeded.")
+          puts green("#{object.label} succeeded.")
         else
-          puts red("#{type} failed.")
+          puts red("#{object.label} failed.")
           puts
-          puts "Failed #{type.downcase} steps:"
+          puts "Failed #{object.label.downcase} steps:"
           puts
           error_counter = 1
           object.steps_completed.each do |step|

@@ -8,8 +8,8 @@ module XcodeBuild
         
         return unless building?
         
-        if line =~ /^\*\* BUILD (\w+) \*\*/
-          notify_build_ended($1)
+        if line =~ /^\*\* (BUILD|ARCHIVE) (\w+) \*\*/
+          notify_build_ended($1, $2)
           return
         end
 
@@ -86,11 +86,11 @@ module XcodeBuild
         notify_delegate(:build_error_detected, :args => [{:command => command, :exit_code => exit_code.to_i}])
       end
 
-      def notify_build_ended(result)
+      def notify_build_ended(archive_or_build, result)
         if result =~ /SUCCEEDED/
-          notify_delegate(:build_succeeded, :required => true)
+          notify_delegate(:build_succeeded, :args => [archive_or_build], :required => true)
         else
-          notify_delegate(:build_failed, :required => true)
+          notify_delegate(:build_failed, :args => [archive_or_build], :required => true)
         end
       end
 

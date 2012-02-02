@@ -53,6 +53,10 @@ module XcodeBuild
       end
       
       class Clean < BuildAction
+        def initialize(metadata)
+          super(metadata)
+          @label = "Clean"
+        end
       end
     end
   end

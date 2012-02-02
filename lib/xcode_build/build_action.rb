@@ -52,6 +52,10 @@ module XcodeBuild
       return nil unless finished?
       @finished_at - @started_at
     end
+    
+    def label
+      @label.downcase.capitalize
+    end
 
     def project_name
       @metadata[:project]

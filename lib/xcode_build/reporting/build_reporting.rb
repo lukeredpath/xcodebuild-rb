@@ -32,12 +32,14 @@ module XcodeBuild
         @build.set_environment_variable(key, value)
       end
 
-      def build_succeeded
+      def build_succeeded(archive_or_build)
+        @build.label = archive_or_build
         @build.success!
         build_finished
       end
 
-      def build_failed
+      def build_failed(archive_or_build)
+        @build.label = archive_or_build
         @build.failure!
         build_finished
       end
@@ -60,10 +62,12 @@ module XcodeBuild
       
       class Build < BuildAction
         attr_reader :environment
+        attr_writer :label
         
         def initialize(metadata)
           super(metadata)
           @environment = {}
+          @label = "Build"
         end
         
         def set_environment_variable(key, value)
