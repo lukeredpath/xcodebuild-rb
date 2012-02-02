@@ -31,6 +31,7 @@ require_relative "xcode_build/build_step"
 require_relative 'xcode_build/output_translator'
 require_relative 'xcode_build/reporter'
 require_relative 'xcode_build/formatters'
+require_relative 'xcode_build/tasks'
 
 # configure the default translations for general use
 XcodeBuild::OutputTranslator.use_translation(:building)
