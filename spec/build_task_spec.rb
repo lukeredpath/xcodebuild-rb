@@ -73,7 +73,7 @@ describe XcodeBuild::Tasks::BuildTask do
     end
   end
   
-  shared_examples_for "any task" do
+  shared_examples_for "any task" do    
     it "directs xcodebuild output into the translator" do
       task = XcodeBuild::Tasks::BuildTask.new { |t| t.scheme = 'TestScheme' }
       XcodeBuild.should_receive(:run).with(anything, instance_of(XcodeBuild::OutputTranslator)).and_return(0)
@@ -139,16 +139,25 @@ describe XcodeBuild::Tasks::BuildTask do
       @task = XcodeBuild::Tasks::BuildTask.new do |task|
         task.scheme = 'TestProject'
         task.after_build do |build|
-          expected_build = build
+          received_build = build
         end
       end
       
-      @task.stub(:build).and_return(expected_build = stub('build'))
+      @task.reporter.stub(:build).and_return(expected_build = stub('build', :failed? => false))
       XcodeBuild.stub(:run).with(anything, anything).and_return(0)
 
       @task.run(task_name)
 
-      expected_build.should == expected_build
+      received_build.should == expected_build
+    end
+    
+    it "raises if the build has failed, even though xcodebuild returned a zero exit code" do
+      @task = XcodeBuild::Tasks::BuildTask.new
+      
+      @task.reporter.stub(:build).and_return(stub('build', :failed? => true))
+      XcodeBuild.stub(:run).with(anything, anything).and_return(0)
+
+      lambda { @task.run(task_name) }.should raise_error
     end
   end
 

@@ -72,12 +72,14 @@ module XcodeBuild
         
         check_status(status)
         
-        if reporter.build.has_errors?
+        if reporter.build && reporter.build.failed?
           # sometimes, a build/archive can fail and xcodebuild won't return a non-zero code
           raise "xcodebuild failed (#{reporter.build.failed_steps.length} steps failed)"
         end
-
-        @after_build_block.call(reporter.build) if !opt == 'clean' && @after_build_block
+        
+        if @after_build_block && opt != 'clean'
+          @after_build_block.call(reporter.build)
+        end
       end
 
       def define

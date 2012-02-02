@@ -82,7 +82,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            
       delegate.should_receive(:build_step_finished).with reporter.build.last_step
            
-      event({:build_succeeded=>{}})
+      event({:build_succeeded=>["BUILD"]})
     end
     
     it "notifies it's delegate when the last build step finishes and the build fails" do
@@ -96,7 +96,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            
       delegate.should_receive(:build_step_finished).with reporter.build.last_step
            
-      event({:build_succeeded=>{}})
+      event({:build_succeeded=>["BUILD"]})
     end
     
     it "associates build errors with the right build step" do
@@ -145,13 +145,13 @@ describe XcodeBuild::Reporting::BuildReporting do
     it "notifies it's delegate that the build has finished when it is successful" do
       assume_build_started
       delegate.should_receive(:build_finished).with(reporter.build)
-      event({:build_succeeded=>{}})
+      event({:build_succeeded=>["BUILD"]})
     end
     
     it "notifies it's delegate that the build has finished when it fails" do
       assume_build_started
       delegate.should_receive(:build_finished).with(reporter.build)
-      event({:build_failed=>{}})
+      event({:build_failed=>["BUILD"]})
     end
     
     it "tracks the time a build takes" do
@@ -163,7 +163,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            :default=>true}})
            
         Timecop.travel(Chronic.parse("5 seconds from now")) do
-          event({:build_succeeded=>{}})
+          event({:build_succeeded=>["BUILD"]})
         end
       end
       
@@ -225,7 +225,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            "objective-c",
            "com.apple.compilers.llvm.clang.1_0.compiler"]}})
            
-      event({:build_succeeded=>{}})
+      event({:build_succeeded=>["BUILD"]})
     end
     
     it_behaves_like "any build"
@@ -282,7 +282,7 @@ describe XcodeBuild::Reporting::BuildReporting do
            "objective-c",
            "com.apple.compilers.llvm.clang.1_0.compiler"]}})
            
-      event({:build_failed=>{}})
+      event({:build_failed=>["BUILD"]})
       
       event({:build_step_failed=>
         {:type=>"CompileC",
