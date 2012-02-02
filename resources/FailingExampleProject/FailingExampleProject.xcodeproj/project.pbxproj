@@ -13,6 +13,12 @@
 		5106377614DAC2800081926B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5106377414DAC2800081926B /* InfoPlist.strings */; };
 		5106377814DAC2800081926B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5106377714DAC2800081926B /* main.m */; };
 		5106377C14DAC2800081926B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5106377B14DAC2800081926B /* AppDelegate.m */; };
+		A3CA66BD14DB1584003E2F1E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5106377714DAC2800081926B /* main.m */; };
+		A3CA66BE14DB1584003E2F1E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5106377B14DAC2800081926B /* AppDelegate.m */; };
+		A3CA66C014DB1584003E2F1E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5106376B14DAC2800081926B /* UIKit.framework */; };
+		A3CA66C114DB1584003E2F1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5106376D14DAC2800081926B /* Foundation.framework */; };
+		A3CA66C214DB1584003E2F1E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5106376F14DAC2800081926B /* CoreGraphics.framework */; };
+		A3CA66C414DB1584003E2F1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5106377414DAC2800081926B /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +32,8 @@
 		5106377914DAC2800081926B /* FailingExampleProject-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FailingExampleProject-Prefix.pch"; sourceTree = "<group>"; };
 		5106377A14DAC2800081926B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5106377B14DAC2800081926B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A3CA66C914DB1584003E2F1E /* FailingExampleProject copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FailingExampleProject copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3CA66CC14DB1584003E2F1E /* FailingExampleProject copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FailingExampleProject copy-Info.plist"; path = "/Users/luke/Code/mine/xcodebuild-rb/resources/FailingExampleProject/FailingExampleProject copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +47,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A3CA66BF14DB1584003E2F1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3CA66C014DB1584003E2F1E /* UIKit.framework in Frameworks */,
+				A3CA66C114DB1584003E2F1E /* Foundation.framework in Frameworks */,
+				A3CA66C214DB1584003E2F1E /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,6 +66,7 @@
 				5106377114DAC2800081926B /* FailingExampleProject */,
 				5106376A14DAC2800081926B /* Frameworks */,
 				5106376814DAC2800081926B /* Products */,
+				A3CA66CC14DB1584003E2F1E /* FailingExampleProject copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				5106376714DAC2800081926B /* FailingExampleProject.app */,
+				A3CA66C914DB1584003E2F1E /* FailingExampleProject copy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,6 +131,23 @@
 			productReference = 5106376714DAC2800081926B /* FailingExampleProject.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A3CA66BB14DB1584003E2F1E /* FailingExampleProjectTwo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3CA66C614DB1584003E2F1E /* Build configuration list for PBXNativeTarget "FailingExampleProjectTwo" */;
+			buildPhases = (
+				A3CA66BC14DB1584003E2F1E /* Sources */,
+				A3CA66BF14DB1584003E2F1E /* Frameworks */,
+				A3CA66C314DB1584003E2F1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FailingExampleProjectTwo;
+			productName = FailingExampleProject;
+			productReference = A3CA66C914DB1584003E2F1E /* FailingExampleProject copy.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -132,6 +169,7 @@
 			projectRoot = "";
 			targets = (
 				5106376614DAC2800081926B /* FailingExampleProject */,
+				A3CA66BB14DB1584003E2F1E /* FailingExampleProjectTwo */,
 			);
 		};
 /* End PBXProject section */
@@ -142,6 +180,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5106377614DAC2800081926B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3CA66C314DB1584003E2F1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3CA66C414DB1584003E2F1E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +217,15 @@
 			files = (
 				5106377814DAC2800081926B /* main.m in Sources */,
 				5106377C14DAC2800081926B /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3CA66BC14DB1584003E2F1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3CA66BD14DB1584003E2F1E /* main.m in Sources */,
+				A3CA66BE14DB1584003E2F1E /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +312,28 @@
 			};
 			name = Release;
 		};
+		A3CA66C714DB1584003E2F1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FailingExampleProject/FailingExampleProject-Prefix.pch";
+				INFOPLIST_FILE = "FailingExampleProject copy-Info.plist";
+				PRODUCT_NAME = "FailingExampleProject copy";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		A3CA66C814DB1584003E2F1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FailingExampleProject/FailingExampleProject-Prefix.pch";
+				INFOPLIST_FILE = "FailingExampleProject copy-Info.plist";
+				PRODUCT_NAME = "FailingExampleProject copy";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -274,6 +351,15 @@
 			buildConfigurations = (
 				5106378014DAC2800081926B /* Debug */,
 				5106378114DAC2800081926B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A3CA66C614DB1584003E2F1E /* Build configuration list for PBXNativeTarget "FailingExampleProjectTwo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A3CA66C714DB1584003E2F1E /* Debug */,
+				A3CA66C814DB1584003E2F1E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
