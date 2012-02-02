@@ -110,14 +110,14 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "xcodebuild-rb"
-  s.version           = "0.1.0"
+  s.version           = "0.2.0"
   s.summary           = "Build Xcode projects using Rake"
   s.author            = "Luke Redpath"
   s.email             = "luke@lukeredpath.co.uk"
   s.homepage          = "http://github.com/lukeredpath/xcodebuild-rb"
 
   s.has_rdoc          = false
-  s.extra_rdoc_files  = %w(README.md)
+  s.extra_rdoc_files  = %w(README.md CHANGES.md)
   s.rdoc_options      = %w(--main README.md)
 
   # Add any extra files to include in the gem
