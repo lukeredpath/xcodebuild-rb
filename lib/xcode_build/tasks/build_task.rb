@@ -3,6 +3,8 @@ require 'rake/tasklib'
 module XcodeBuild
   module Tasks
     class BuildTask < ::Rake::TaskLib
+      include Rake::DSL if defined?(Rake::DSL)
+
       attr_accessor :project_name
       attr_accessor :target
       attr_accessor :workspace
