@@ -71,6 +71,12 @@ namespace :examples do
 
     end
   end
+
+  XcodeBuild::Tasks::BuildTask.new(:failing) do |t|
+    t.scheme = 'FailingExampleProject'
+    t.invoke_from_within = "resources/FailingExampleProject"
+    #t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
+  end
 end
 
 task :run_tests => :clean_example do
