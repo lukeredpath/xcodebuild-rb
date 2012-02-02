@@ -9,7 +9,7 @@ module XcodeBuild
       
       def clean_started(params)
         @clean = Clean.new(params)
-        notify :clean_started, @clean
+        notify :clean_started, clean
       end
       
       def clean_step(params)

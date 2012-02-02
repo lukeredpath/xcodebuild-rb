@@ -11,48 +11,48 @@ module XcodeBuild
       
       def build_started(params)
         @build = Build.new(params)
-        notify :build_started, @build
+        notify :build_started, build
       end
 
       def build_step(params)
-        if @build.last_step
-          notify :build_step_finished, @build.last_step
+        if build.last_step
+          notify :build_step_finished, build.last_step
         end
 
-        @build.add_step(params)
+        build.add_step(params)
 
-        notify :build_step_started, @build.last_step
+        notify :build_step_started, build.last_step
       end
 
       def build_error_detected(params)
-        @build.last_step.add_error(params)
+        build.last_step.add_error(params)
       end
       
       def build_env_variable_detected(key, value)
-        @build.set_environment_variable(key, value)
+        build.set_environment_variable(key, value)
       end
 
       def build_succeeded(archive_or_build)
-        @build.label = archive_or_build
+        build.label = archive_or_build
         
         # for some reason, archive reports a success even if there was an error
         if build.has_errors?
-          @build.failure!
+          build.failure!
         else
-          @build.success!
+          build.success!
         end
         
         build_finished
       end
 
       def build_failed(archive_or_build)
-        @build.label = archive_or_build
-        @build.failure!
+        build.label = archive_or_build
+        build.failure!
         build_finished
       end
 
       def build_step_failed(params)
-        if step = @build.step_with_params(params)
+        if step = build.step_with_params(params)
           step.failed = true
         end
       end
@@ -60,11 +60,11 @@ module XcodeBuild
       private
 
       def build_finished
-        if @build.last_step
-          notify :build_step_finished, @build.last_step
+        if build.last_step
+          notify :build_step_finished, build.last_step
         end
 
-        notify :build_finished, @build
+        notify :build_finished, build
       end
       
       class Build < BuildAction

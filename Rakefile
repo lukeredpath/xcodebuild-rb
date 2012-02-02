@@ -29,12 +29,12 @@ class InspectReporter < XcodeBuild::Reporter
     pp({:build_env_variable_detected => {key => value}})
   end
   
-  def build_succeeded
-    pp({:build_succeeded => {}})
+  def build_succeeded(build_or_archive)
+    pp({:build_succeeded => [build_or_archive]})
   end
   
-  def build_failed
-    pp({:build_failed => {}})
+  def build_failed(build_or_archive)
+    pp({:build_failed => [build_or_archive]})
   end
   
   def build_step_failed(params)
@@ -77,10 +77,10 @@ namespace :examples do
   end
 
   XcodeBuild::Tasks::BuildTask.new(:failing) do |t|
-    t.scheme = 'FailingExampleProject'
+    t.scheme = 'FailsWithPostActionScript'
     t.invoke_from_within = "resources/FailingExampleProject"
     #t.reporter_klass = InspectReporter
-    t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
+    #t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
   end
 end
 

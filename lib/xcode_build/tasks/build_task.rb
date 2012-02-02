@@ -23,13 +23,28 @@ module XcodeBuild
         @output_to = STDOUT
         @invoke_from_within = "."
         @reporter_klass = XcodeBuild::Reporter
+        @hooks = {}
         
         yield self if block_given?
         define
       end
       
       def after_build(&block)
-        @after_build_block = block
+        @hooks[:after_build] = block
+      end
+      
+      def after_clean(&block)
+        @hooks[:after_clean] = block
+      end
+      
+      def after_archive(&block)
+        @hooks[:after_archive] = block
+      end
+      
+      def execute_hook(name, *args)
+        if hook = @hooks[name.to_sym]
+          hook.call(*args)
+        end
       end
 
       def run(task)
@@ -63,11 +78,11 @@ module XcodeBuild
         (build_opts + additional_opts).compact.join(" ")
       end
 
-      def xcodebuild(opt = nil)
+      def xcodebuild(action)
         reporter.direct_raw_output_to = output_to unless formatter
         
         status = Dir.chdir(invoke_from_within) do
-          XcodeBuild.run(build_opts_string(opt), output_buffer)
+          XcodeBuild.run(build_opts_string(action), output_buffer)
         end
         
         check_status(status)
@@ -77,8 +92,14 @@ module XcodeBuild
           raise "xcodebuild failed (#{reporter.build.failed_steps.length} steps failed)"
         end
         
-        if @after_build_block && opt != 'clean'
-          @after_build_block.call(reporter.build)
+        case action
+        when :build
+          execute_hook(:after_build, reporter.build)
+        when :archive
+          execute_hook(:after_build, reporter.build)
+          execute_hook(:after_archive, reporter.build)
+        when :clean
+          execute_hook(:after_clean, reporter.clean)
         end
       end
 
@@ -87,17 +108,17 @@ module XcodeBuild
           desc "Creates an archive build of the specified target(s)."
           task :archive do
             raise "You need to specify a `scheme' in order to be able to create an archive build!" unless scheme
-            xcodebuild 'archive'
+            xcodebuild :archive
           end
 
           desc "Builds the specified target(s)."
           task :build do
-            xcodebuild
+            xcodebuild :build
           end
           
           desc "Cleans the build using the same build settings."
           task :clean do
-            xcodebuild 'clean'
+            xcodebuild :clean
           end
           
           desc "Builds the specified target(s) from a clean slate."
