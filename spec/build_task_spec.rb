@@ -13,7 +13,12 @@ describe XcodeBuild::Tasks::BuildTask do
     XcodeBuild::Tasks::BuildTask.new(:test)
     Rake::Task["test:build"].should be_instance_of(Rake::Task)
   end
-  
+
+  it "defines an archive task" do
+    XcodeBuild::Tasks::BuildTask.new
+    Rake::Task["xcode:archive"].should be_instance_of(Rake::Task)
+  end
+
   it "defines a clean task" do
     XcodeBuild::Tasks::BuildTask.new
     Rake::Task["xcode:clean"].should be_instance_of(Rake::Task)
@@ -70,7 +75,7 @@ describe XcodeBuild::Tasks::BuildTask do
   
   shared_examples_for "any task" do
     it "directs xcodebuild output into the translator" do
-      task = XcodeBuild::Tasks::BuildTask.new
+      task = XcodeBuild::Tasks::BuildTask.new { |t| t.scheme = 'TestScheme' }
       XcodeBuild.should_receive(:run).with(anything, instance_of(XcodeBuild::OutputTranslator)).and_return(0)
       task.run(task_name)
     end
@@ -80,6 +85,7 @@ describe XcodeBuild::Tasks::BuildTask do
       task = XcodeBuild::Tasks::BuildTask.new do |t|
         t.formatter = nil
         t.output_to = buffer
+        t.scheme = 'TestScheme'
       end
       task.reporter.should_receive(:direct_raw_output_to=).with(buffer)
       XcodeBuild.stub(:run).with(anything, anything).and_return(0)
@@ -90,6 +96,7 @@ describe XcodeBuild::Tasks::BuildTask do
       task = XcodeBuild::Tasks::BuildTask.new do |t|
         t.formatter = stub('formatter')
         t.output_to = stub('output buffer')
+        t.scheme = 'TestScheme'
       end
       task.reporter.should_not_receive(:direct_raw_output_to=).with(anything)
       XcodeBuild.stub(:run).with(anything, anything).and_return(0)
@@ -97,7 +104,7 @@ describe XcodeBuild::Tasks::BuildTask do
     end
     
     it "raises if xcodebuild returns a non-zero exit code" do
-      task = XcodeBuild::Tasks::BuildTask.new
+      task = XcodeBuild::Tasks::BuildTask.new { |t| t.scheme = 'TestScheme' }
       XcodeBuild.stub(:run).with(anything, anything).and_return(99)
       lambda { task.run(task_name) }.should raise_error
     end
@@ -105,6 +112,7 @@ describe XcodeBuild::Tasks::BuildTask do
     it "changes directory if invoke_from_within is set" do
       task = XcodeBuild::Tasks::BuildTask.new do |task|
         task.invoke_from_within = "foo/bar"
+        task.scheme = 'TestScheme'
       end
       
       Dir.should_receive(:chdir).with("foo/bar").and_yield
@@ -113,39 +121,58 @@ describe XcodeBuild::Tasks::BuildTask do
     end
   end
 
-  context "build task" do
-    let(:task_name) { :build }
-    
-    it_behaves_like "any task"
-    
+  shared_examples_for "build task" do
     it "runs xcodebuild with the configured build_opts" do
-      task = XcodeBuild::Tasks::BuildTask.new do |task|
+      @task = XcodeBuild::Tasks::BuildTask.new do |task|
         task.project_name = "TestProject.xcproject"
         task.configuration = "Debug"
+        task.scheme = 'TestScheme'
       end
       
-      XcodeBuild.should_receive(:run).with(task.build_opts.join(" "), anything).and_return(0)
-      task.run(:build)
+      XcodeBuild.should_receive(:run).with(build_opts.join(" "), anything).and_return(0)
+      @task.run(task_name)
     end
     
     it "calls the after_build block after running successfully, passing in the build object from the report" do
       received_build = nil
       
-      task = XcodeBuild::Tasks::BuildTask.new do |task|
+      @task = XcodeBuild::Tasks::BuildTask.new do |task|
+        task.scheme = 'TestProject'
         task.after_build do |build|
           expected_build = build
         end
       end
       
-      task.stub(:build).and_return(expected_build = stub('build'))
+      @task.stub(:build).and_return(expected_build = stub('build'))
       XcodeBuild.stub(:run).with(anything, anything).and_return(0)
 
-      task.run(:build)
+      @task.run(task_name)
 
       expected_build.should == expected_build
     end
   end
-  
+
+  context "build task" do
+    let(:task_name) { :build }
+    let(:build_opts) { @task.build_opts }
+    
+    it_behaves_like "any task"
+    it_behaves_like "build task"
+  end
+
+  context "archive task" do
+    let(:task_name) { :archive }
+    let(:build_opts) { @task.build_opts + ['archive'] }
+    
+    it_behaves_like "any task"
+    it_behaves_like "build task"
+
+    it "raises if no scheme is specified" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      lambda { task.run(:archive) }.should raise_error
+    end
+  end
+
   context "clean task" do
     let(:task_name) { :clean }
     
