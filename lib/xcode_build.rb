@@ -1,3 +1,11 @@
+unless Kernel.respond_to?(:require_relative)
+  module Kernel
+    def require_relative(path)
+      require File.join(File.dirname(caller[0]), path.to_str)
+    end
+  end
+end
+
 module XcodeBuild
   def self.run(args = "", output_buffer = STDOUT)
     IO.popen("xcodebuild #{args} 2>&1") do |io|

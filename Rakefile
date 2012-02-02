@@ -14,51 +14,51 @@ task :default => :spec
 
 class InspectReporter
   def build_started(params)
-    pp({build_started: params})
+    pp({:build_started => params})
   end
   
   def clean_step(params)
-    pp({build_step: params})
+    pp({:build_step => params})
   end
   
   def build_error_detected(params)
-    pp({build_error_detected: params})
+    pp({:build_error_detected => params})
   end
   
   def build_succeeded
-    pp({build_succeeded: {}})
+    pp({:build_succeeded => {}})
   end
   
   def build_failed
-    pp({build_failed: {}})
+    pp({:build_failed => {}})
   end
   
   def build_step_failed(params)
-    pp({build_step_failed: params})
+    pp({:build_step_failed => params})
   end
   
   def clean_started(params)
-    pp({clean_started: params})
+    pp({:clean_started => params})
   end
   
   def clean_step(params)
-    pp({clean_step: params})
+    pp({:clean_step => params})
   end
   
   def clean_error_detected(params)
-    pp({clean_error_detected: params})
+    pp({:clean_error_detected => params})
   end
   
   def clean_succeeded
-    pp({clean_succeeded: {}})
+    pp({:clean_succeeded => {}})
   end
   
   def clean_failed
-    pp({clean_failed: {}})
+    pp({:clean_failed => {}})
   end
   
   def clean_step_failed(params)
-    pp({clean_step_failed: params})
+    pp({:clean_step_failed => params})
   end
 end
 

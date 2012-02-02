@@ -99,7 +99,7 @@ describe XcodeBuild::Tasks::BuildTask do
     it "raises if xcodebuild returns a non-zero exit code" do
       task = XcodeBuild::Tasks::BuildTask.new
       XcodeBuild.stub(:run).with(anything, anything).and_return(99)
-      -> { task.run(task_name) }.should raise_error
+      lambda { task.run(task_name) }.should raise_error
     end
     
     it "changes directory if invoke_from_within is set" do

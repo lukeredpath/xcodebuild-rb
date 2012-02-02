@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe XcodeBuild::OutputTranslator do
   let(:delegate)   { mock('delegate') }
-  let(:translator) { XcodeBuild::OutputTranslator.new(delegate, ignore_global_translations: true) }
+  let(:translator) { XcodeBuild::OutputTranslator.new(delegate, :ignore_global_translations => true) }
   
   it "notifies the delegate of each line received (to assist additional processing elsewhere)" do
     delegate.should_receive(:beginning_translation_of_line).with("the line")
