@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require_relative 'translations'
+require 'xcode_build/translations'
 
 module XcodeBuild
   class OutputTranslator

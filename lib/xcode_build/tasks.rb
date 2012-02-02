@@ -3,4 +3,4 @@ module XcodeBuild
   end
 end
 
-require_relative 'tasks/build_task'
+require 'xcode_build/tasks/build_task'
