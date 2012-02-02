@@ -32,6 +32,8 @@ module XcodeBuild
           notify_build_error($1, $2, $3, $4)
         when /^\s+setenv (\w+) (.*)/
           notify_env_var($1, $2)
+        when /^Command (.*) failed with exit code (\d+)/
+          notify_build_step_command_failed($1, $2)
         when /^The following build commands failed:/
           @beginning_error_report = true
         when /^\n/
@@ -78,6 +80,10 @@ module XcodeBuild
              :char => char.to_i,
           :message => message
         }])
+      end
+      
+      def notify_build_step_command_failed(command, exit_code)
+        notify_delegate(:build_error_detected, :args => [{:command => command, :exit_code => exit_code.to_i}])
       end
 
       def notify_build_ended(result)

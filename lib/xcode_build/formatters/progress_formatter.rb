@@ -49,12 +49,16 @@ module XcodeBuild
           error_counter = 1
           object.steps_completed.each do |step|
             next unless step.has_errors?
-            
+
             puts indent("#{error_counter}) #{step.type} #{step.arguments.join(" ")}")
 
             step.errors.each do |err|
-              puts indent("   #{red(err.message)}")
-              puts indent(cyan("   in #{err.file}:#{err.line.to_s}")) if err.file
+              print indent("   #{red(err.message)}")
+              if err.error_detail
+                puts indent(cyan(err.error_detail)) 
+              else
+                puts
+              end
               puts
             end
             

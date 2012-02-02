@@ -12,17 +12,21 @@ RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
 
-class InspectReporter
+class InspectReporter < XcodeBuild::Reporter
   def build_started(params)
     pp({:build_started => params})
   end
   
-  def clean_step(params)
+  def build_step(params)
     pp({:build_step => params})
   end
   
   def build_error_detected(params)
     pp({:build_error_detected => params})
+  end
+  
+  def build_env_variable_detected(key, value)
+    pp({:build_env_variable_detected => {key => value}})
   end
   
   def build_succeeded
@@ -75,7 +79,8 @@ namespace :examples do
   XcodeBuild::Tasks::BuildTask.new(:failing) do |t|
     t.scheme = 'FailingExampleProject'
     t.invoke_from_within = "resources/FailingExampleProject"
-    #t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
+    #t.reporter_klass = InspectReporter
+    t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
   end
 end
 

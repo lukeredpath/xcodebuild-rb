@@ -155,6 +155,14 @@ describe XcodeBuild::Translations::Building do
       translator << "2 errors generated."
     end
 
+    it "notifies the delegate of errors that occur when a command within a step fails" do
+      delegate.should_receive(:build_error_detected).with(
+          :command => "/bin/sh",
+        :exit_code => 1
+      )
+      translator << "Command /bin/sh failed with exit code 1"
+    end
+
     it "treats :build_error_detected as an optional delegate message" do
       delegate_should_not_respond_to(:build_error_detected)
       delegate.should_not_receive(:build_error_detected)

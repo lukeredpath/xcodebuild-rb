@@ -99,6 +99,49 @@ describe XcodeBuild::Reporting::BuildReporting do
       event({:build_succeeded=>{}})
     end
     
+    it "associates build errors with the right build step" do
+      assume_build_started
+
+      event({:build_step=>
+        {:type=>"CompileC",
+         :arguments=>
+          ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/main.o",
+           "ExampleProject/AppDelegate.m",
+           "normal",
+           "armv7",
+           "objective-c",
+           "com.apple.compilers.llvm.clang.1_0.compiler"]}})
+           
+      event({:build_error_detected=>
+        {:file=>
+          "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m",
+         :line=>16,
+         :char=>42,
+         :message=>"expected ';' after expression [1]"}})
+         
+      reporter.build.last_step.should have(1).errors
+    end
+    
+    it "associates build step command errors with the right build step" do
+      assume_build_started
+
+      event({:build_step=>
+        {:type=>"CompileC",
+         :arguments=>
+          ["build/ExampleProject.build/Release-iphoneos/ExampleProject.build/Objects-normal/armv7/main.o",
+           "ExampleProject/AppDelegate.m",
+           "normal",
+           "armv7",
+           "objective-c",
+           "com.apple.compilers.llvm.clang.1_0.compiler"]}})
+           
+      event({:build_error_detected=>
+        {:command => "/bin/sh",
+         :exit_code => 1}})
+         
+      reporter.build.last_step.should have(1).errors
+    end
+    
     it "notifies it's delegate that the build has finished when it is successful" do
       assume_build_started
       delegate.should_receive(:build_finished).with(reporter.build)
