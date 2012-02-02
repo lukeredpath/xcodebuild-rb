@@ -35,6 +35,8 @@ When you run `rake xcode:build`, `xcodebuild` will be invoked without any argume
       t.configuration = "Release"
     end
 
+_Note that in order to be able to use the `xcode:archive` task, a scheme **has** to be provided_
+
 When you run the rake tasks provided, the default behaviour is to simply output the exact output from `xcodebuild`. However, `xcodebuild-rb` can go one better and allow you to configure custom formatters that change the way the build output is displayed. Some formatters are built-in, or you can write your own.
 
 For instance, we could use the "progress" formatter that ships with `xcodebuild-rb`. Anybody who is used to the output of Ruby's Test::Unit library or RSpec library will be familiar with this.

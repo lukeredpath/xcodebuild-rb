@@ -57,37 +57,37 @@ module XcodeBuild
           default = false
         end
 
-        notify_delegate(:clean_started, required: true, args: [{
-                 target: target,
-                project: project,
-          configuration: configuration,
-                default: default
+        notify_delegate(:clean_started, :required => true, :args => [{
+                 :target => target,
+                :project => project,
+          :configuration => configuration,
+                :default => default
         }])
       end
       
       def notify_clean_step(line)
-        notify_delegate(:clean_step, args: [clean_step_from_line(line)])
+        notify_delegate(:clean_step, :args => [clean_step_from_line(line)])
       end
       
       def notify_clean_step_failed(line)
-        notify_delegate(:clean_step_failed, args: [clean_step_from_line(line)])
+        notify_delegate(:clean_step_failed, :args => [clean_step_from_line(line)])
       end
       
       def notify_clean_error(message)
-        notify_delegate(:clean_error_detected, args: [{message: message}])
+        notify_delegate(:clean_error_detected, :args => [{:message => message}])
       end
       
       def notify_clean_ended(result)
         if result =~ /SUCCEEDED/
-          notify_delegate(:clean_succeeded, required: true)
+          notify_delegate(:clean_succeeded, :required => true)
         else
-          notify_delegate(:clean_failed, required: true)
+          notify_delegate(:clean_failed, :required => true)
         end
       end
       
       def clean_step_from_line(line)
         parts = line.strip.split(" ")
-        {type: parts.shift, arguments: parts}
+        {:type => parts.shift, :arguments => parts}
       end
     end
 

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require_relative '../utilities/colorize'
+require 'xcode_build/utilities/colorize'
 
 module XcodeBuild
   module Formatters

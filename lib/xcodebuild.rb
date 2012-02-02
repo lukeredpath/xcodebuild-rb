@@ -1,1 +1,1 @@
-require_relative 'xcode_build'
+require 'xcode_build'

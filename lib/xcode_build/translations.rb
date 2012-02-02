@@ -16,5 +16,5 @@ module XcodeBuild
   end
 end
 
-require_relative "translations/building"
-require_relative "translations/cleaning"
+require "xcode_build/translations/building"
+require "xcode_build/translations/cleaning"

@@ -1,5 +1,5 @@
-require_relative "reporting/build_reporting"
-require_relative "reporting/clean_reporting"
+require "xcode_build/reporting/build_reporting"
+require "xcode_build/reporting/clean_reporting"
 
 module XcodeBuild
   class Reporter

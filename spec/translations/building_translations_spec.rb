@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe XcodeBuild::Translations::Building do
   let(:delegate)    { mock('delegate', :respond_to? => true) }
-  let(:translator)  { XcodeBuild::OutputTranslator.new(delegate, ignore_global_translations: true) }
+  let(:translator)  { XcodeBuild::OutputTranslator.new(delegate, :ignore_global_translations => true) }
   let(:translation) { translator.translations[0] }
   
   before do
@@ -22,10 +22,10 @@ describe XcodeBuild::Translations::Building do
     it "notifies the delegate of the start of a build with the default configuration" do
       delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
-                target: "ExampleProject",
-               project: "ExampleProject",
-         configuration: "Release",
-               default: true
+                :target => "ExampleProject",
+               :project => "ExampleProject",
+         :configuration => "Release",
+               :default => true
       )
       translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE DEFAULT CONFIGURATION (Release) ==="
     end
@@ -33,17 +33,17 @@ describe XcodeBuild::Translations::Building do
     it "notifies the delegate of the start of a build with a non-default configuration" do
       delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
-                target: "ExampleProject",
-               project: "ExampleProject",
-         configuration: "Debug",
-               default: false
+                :target => "ExampleProject",
+               :project => "ExampleProject",
+         :configuration => "Debug",
+               :default => false
       )
       translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
     end
 
     it "treats :build_started as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:build_started)
-      -> { 
+      lambda { 
         translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -57,8 +57,8 @@ describe XcodeBuild::Translations::Building do
     
     it "notifies the delegate of a single build step" do
       delegate.should_receive(:build_step).with(
-             type: "CodeSign", 
-        arguments: ["build/Debug-iphoneos/ExampleProject.app"]
+             :type => "CodeSign", 
+        :arguments => ["build/Debug-iphoneos/ExampleProject.app"]
       )
       translator << "\n"
       translator << "CodeSign build/Debug-iphoneos/ExampleProject.app"
@@ -79,7 +79,7 @@ describe XcodeBuild::Translations::Building do
 
     it "treats :build_failed as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:build_failed)
-      -> { 
+      lambda { 
         translator << "** BUILD FAILED **"
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -93,7 +93,7 @@ describe XcodeBuild::Translations::Building do
 
     it "treats :build_succeeded as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:build_succeeded)
-      -> { 
+      lambda { 
         translator << "** BUILD SUCCEEDED **"
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
@@ -101,8 +101,8 @@ describe XcodeBuild::Translations::Building do
 
     it "notifies the delegate of build step failures" do
       delegate.should_receive(:build_step_failed).with(
-             type: "CodeSign", 
-        arguments: ["build/Debug-iphoneos/ExampleProject.app"]
+             :type => "CodeSign", 
+        :arguments => ["build/Debug-iphoneos/ExampleProject.app"]
       )
       translator << "The following build commands failed:"
       translator << "\tCodeSign build/Debug-iphoneos/ExampleProject.app"
@@ -118,20 +118,20 @@ describe XcodeBuild::Translations::Building do
 
     it "notifies the delegate of errors that occur throughout the build" do
       delegate.should_receive(:build_error_detected).with(
-             file: "/ExampleProject/main.m", 
-             line: 16,
-             char: 42,
-          message: "expected ';' after expression [1]"
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "expected ';' after expression [1]"
       )
       translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
     end
 
     it "notifies the delegate of errors for different build steps" do
       delegate.should_receive(:build_error_detected).with(
-             file: "/ExampleProject/main.m", 
-             line: 16,
-             char: 42,
-          message: "expected ';' after expression [1]"
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "expected ';' after expression [1]"
       )
 
       translator << "CompileC ExampleProject/main.m normal"
@@ -141,10 +141,10 @@ describe XcodeBuild::Translations::Building do
 
     it "notifies the delegate of multiple errors for the same build step" do
       delegate.should_receive(:build_error_detected).with(
-             file: "/ExampleProject/main.m", 
-             line: 16,
-             char: 42,
-          message: "expected ';' after expression [1]"
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "expected ';' after expression [1]"
       ).twice
 
       translator << "CompileC ExampleProject/main.m normal"
