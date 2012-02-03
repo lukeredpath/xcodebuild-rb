@@ -23,28 +23,28 @@ describe XcodeBuild::Translations::Building do
       delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
                 :target => "ExampleProject",
-               :project => "ExampleProject",
+               :project => "ExampleProject.xcodeproj",
          :configuration => "Release",
                :default => true
       )
-      translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE DEFAULT CONFIGURATION (Release) ==="
+      translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject.xcodeproj WITH THE DEFAULT CONFIGURATION (Release) ==="
     end
     
     it "notifies the delegate of the start of a build with a non-default configuration" do
       delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
                 :target => "ExampleProject",
-               :project => "ExampleProject",
+               :project => "ExampleProject.xcodeproj",
          :configuration => "Debug",
                :default => false
       )
-      translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
+      translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject.xcodeproj WITH THE CONFIGURATION Debug ==="
     end
 
     it "treats :build_started as a required delegate message and raise if it doesn't respond" do
       delegate_should_not_respond_to(:build_started)
       lambda { 
-        translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject WITH THE CONFIGURATION Debug ==="
+        translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject.xcodeproj WITH THE CONFIGURATION Debug ==="
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
     end

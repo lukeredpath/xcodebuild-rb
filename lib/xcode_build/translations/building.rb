@@ -51,7 +51,7 @@ module XcodeBuild
         @building = true
         
         target = line.match(/TARGET (\w+)/)[1]
-        project = line.match(/PROJECT (\w+)/)[1]
+        project = line.match(/PROJECT ([\w\-\.]+)/)[1]
 
         if line =~ /DEFAULT CONFIGURATION \((\w+)\)/
           configuration = $1
