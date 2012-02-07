@@ -21,7 +21,7 @@ module XcodeBuild
     end
     
     def report_running_action(action)
-      @delegate.build_action_starting(action)
+      notify :build_action_starting, action
     end
 
     private

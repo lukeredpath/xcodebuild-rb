@@ -81,7 +81,7 @@ module XcodeBuild
       def xcodebuild(action)
         reporter.direct_raw_output_to = output_to unless formatter
         
-        reporter.report_running_action(action)
+        reporter.report_running_action(action) if reporter.respond_to?(:report_running_action)
         
         status = Dir.chdir(invoke_from_within) do
           XcodeBuild.run(build_opts_string(action), output_buffer)
