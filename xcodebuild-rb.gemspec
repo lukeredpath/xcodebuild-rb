@@ -2,15 +2,15 @@
 
 Gem::Specification.new do |s|
   s.name = "xcodebuild-rb"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luke Redpath"]
-  s.date = "2012-01-30"
+  s.date = "2012-02-02"
   s.email = "luke@lukeredpath.co.uk"
   s.executables = ["rbxcb"]
-  s.extra_rdoc_files = ["README.md"]
-  s.files = ["LICENSE", "README.md", "bin/rbxcb", "spec/build_task_spec.rb", "spec/output_translator_spec.rb", "spec/reporting", "spec/reporting/build_reporting_spec.rb", "spec/reporting/clean_reporting_spec.rb", "spec/spec_helper.rb", "spec/translations", "spec/translations/building_translations_spec.rb", "spec/translations/cleaning_translations_spec.rb", "lib/xcode_build", "lib/xcode_build/build_action.rb", "lib/xcode_build/build_step.rb", "lib/xcode_build/formatters", "lib/xcode_build/formatters/progress_formatter.rb", "lib/xcode_build/formatters.rb", "lib/xcode_build/output_translator.rb", "lib/xcode_build/reporter.rb", "lib/xcode_build/reporting", "lib/xcode_build/reporting/build_reporting.rb", "lib/xcode_build/reporting/clean_reporting.rb", "lib/xcode_build/tasks", "lib/xcode_build/tasks/build_task.rb", "lib/xcode_build/translations", "lib/xcode_build/translations/building.rb", "lib/xcode_build/translations/cleaning.rb", "lib/xcode_build/translations.rb", "lib/xcode_build/utilities", "lib/xcode_build/utilities/colorize.rb", "lib/xcode_build.rb", "lib/xcodebuild.rb"]
+  s.extra_rdoc_files = ["README.md", "CHANGES.md"]
+  s.files = ["LICENSE", "README.md", "bin/rbxcb", "spec/build_task_spec.rb", "spec/output_translator_spec.rb", "spec/reporting/build_reporting_spec.rb", "spec/reporting/clean_reporting_spec.rb", "spec/spec_helper.rb", "spec/translations/building_translations_spec.rb", "spec/translations/cleaning_translations_spec.rb", "lib/xcode_build/build_action.rb", "lib/xcode_build/build_step.rb", "lib/xcode_build/formatters/progress_formatter.rb", "lib/xcode_build/formatters.rb", "lib/xcode_build/output_translator.rb", "lib/xcode_build/reporter.rb", "lib/xcode_build/reporting/build_reporting.rb", "lib/xcode_build/reporting/clean_reporting.rb", "lib/xcode_build/tasks/build_task.rb", "lib/xcode_build/tasks.rb", "lib/xcode_build/translations/building.rb", "lib/xcode_build/translations/cleaning.rb", "lib/xcode_build/translations.rb", "lib/xcode_build/utilities/colorize.rb", "lib/xcode_build.rb", "lib/xcodebuild.rb", "CHANGES.md"]
   s.homepage = "http://github.com/lukeredpath/xcodebuild-rb"
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xcodebuild-rb (0.1.0)
+    xcodebuild-rb (0.2.0)
       state_machine (~> 1.1.2)
 
 GEM
