@@ -8,10 +8,17 @@ module XcodeBuild
       
       def initialize(output = STDOUT)
         @output = output
+        @action_count = 0
+      end
+      
+      def build_action_starting(action_type)
+        puts cyan("=> Running xcodebuild #{action_type}")
+        @action_count = 0
       end
       
       def clean_started(clean)
         report_started("Cleaning", clean)
+        @action_count += 1
       end
       
       def clean_step_finished(step)
@@ -24,6 +31,7 @@ module XcodeBuild
       
       def build_started(build)
         report_started("Building", build)
+        @action_count += 1
       end
       
       def build_step_finished(step)
@@ -83,6 +91,7 @@ module XcodeBuild
       end
       
       def report_started(type, object)
+        puts unless @action_count.zero?
         puts
         banner = "#{type} target: #{object.target} (in #{object.project_name}.xcproject)"
         puts bold(banner)

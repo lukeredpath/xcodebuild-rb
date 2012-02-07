@@ -19,6 +19,10 @@ module XcodeBuild
     def beginning_translation_of_line(line)
       (@output_stream << line) if @output_stream
     end
+    
+    def report_running_action(action)
+      @delegate.build_action_starting(action)
+    end
 
     private
 
