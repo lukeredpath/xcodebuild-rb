@@ -20,7 +20,6 @@ describe XcodeBuild::Translations::Building do
     end
     
     it "notifies the delegate of the start of a build with the default configuration" do
-      delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
                 :target => "ExampleProject",
                :project => "ExampleProject.xcodeproj",
@@ -31,7 +30,6 @@ describe XcodeBuild::Translations::Building do
     end
     
     it "notifies the delegate of the start of a build with a non-default configuration" do
-      delegate.stub(:beginning_translation_of_line)
       delegate.should_receive(:build_started).with(
                 :target => "ExampleProject",
                :project => "ExampleProject.xcodeproj",
@@ -47,6 +45,18 @@ describe XcodeBuild::Translations::Building do
         translator << "=== BUILD NATIVE TARGET ExampleProject OF PROJECT ExampleProject.xcodeproj WITH THE CONFIGURATION Debug ==="
 
       }.should raise_error(XcodeBuild::OutputTranslator::MissingDelegateMethodError)
+    end
+  end
+  
+  context "when translating a built started line" do
+    it "handles hyphens in the target name" do
+      delegate.should_receive(:build_started).with(
+                :target => "ExampleProject-Test",
+               :project => "ExampleProject.xcodeproj",
+         :configuration => "Release",
+               :default => true
+      )
+      translator << "=== BUILD NATIVE TARGET ExampleProject-Test OF PROJECT ExampleProject.xcodeproj WITH THE DEFAULT CONFIGURATION (Release) ==="
     end
   end
   

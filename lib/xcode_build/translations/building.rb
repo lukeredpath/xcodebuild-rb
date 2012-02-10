@@ -50,7 +50,7 @@ module XcodeBuild
       def notify_build_started(line)
         @building = true
         
-        target = line.match(/TARGET (\w+)/)[1]
+        target = line.match(/TARGET ([\w\-\.]+)/)[1]
         project = line.match(/PROJECT ([\w\-\.]+)/)[1]
 
         if line =~ /DEFAULT CONFIGURATION \((\w+)\)/
