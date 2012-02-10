@@ -112,19 +112,19 @@ describe XcodeBuild::Reporting::CleanReporting do
     end
     
     it "tracks the time a clean takes" do
-      Timecop.travel(Chronic.parse("10 seconds ago")) do
+      Timecop.travel(Time.parse("01 Jan 2012 00:00:00")) do
         event({:clean_started=>
           {:target=>"ExampleProject",
            :project=>"ExampleProject",
            :configuration=>"Release",
            :default=>true}})
            
-        Timecop.travel(Chronic.parse("5 seconds from now")) do
+        Timecop.travel(Time.parse("01 Jan 2012 00:00:05")) do
           event({:clean_succeeded=>{}})
         end
       end
       
-      reporter.clean.duration.should be_within(0.01).of(5)
+      reporter.clean.duration.should be_within(0.001).of(5)
     end
   end
   
