@@ -15,7 +15,6 @@ end
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'xcodebuild'
-require 'chronic'
 require 'timecop'
 
 def delegate_should_respond_to(method)
