@@ -175,6 +175,24 @@ describe XcodeBuild::Reporting::BuildReporting do
       event({:build_env_variable_detected=>["TEST_AFTER_BUILD", "YES"]})
       reporter.build.environment["TEST_AFTER_BUILD"].should == "YES"
     end
+    
+    it "tracks any warnings that occur" do
+      event({:build_warning_detected=>
+        {:file=>
+          "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m",
+         :line=>16,
+         :char=>42,
+         :message=>"expected ';' after expression [1]"}})
+      
+      event({:build_warning_detected=>
+       {:file=>
+         "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m",
+        :line=>16,
+        :char=>180,
+        :message=>"expected ';' after expression [1]"}})
+        
+      reporter.build.should have(2).warnings
+    end
   end
   
   context "once a build has started" do

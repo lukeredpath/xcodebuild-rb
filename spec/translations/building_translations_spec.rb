@@ -164,6 +164,14 @@ describe XcodeBuild::Translations::Building do
       translator << ""
       translator << "2 errors generated."
     end
+
+    it "notifies the delegate of errors that occur when a command within a step fails" do
+      delegate.should_receive(:build_error_detected).with(
+          :command => "/bin/sh",
+        :exit_code => 1
+      )
+      translator << "Command /bin/sh failed with exit code 1"
+    end
     
     it "notifies the delegate of warnings" do
       delegate.should_receive(:build_warning_detected).with(
@@ -177,18 +185,16 @@ describe XcodeBuild::Translations::Building do
       translator << "1 warning generated."
     end
 
-    it "notifies the delegate of errors that occur when a command within a step fails" do
-      delegate.should_receive(:build_error_detected).with(
-          :command => "/bin/sh",
-        :exit_code => 1
-      )
-      translator << "Command /bin/sh failed with exit code 1"
-    end
-
     it "treats :build_error_detected as an optional delegate message" do
       delegate_should_not_respond_to(:build_error_detected)
       delegate.should_not_receive(:build_error_detected)
       translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    end
+    
+    it "treats :build_warning_detected as an optional delegate message" do
+      delegate_should_not_respond_to(:build_warning_detected)
+      delegate.should_not_receive(:build_warning_detected)
+      translator << "/ExampleProject/main.m:16:42: warning: expected ';' after expression [1]"
     end
     
     it "notifies the delegate of any environment variables that the build outputs" do

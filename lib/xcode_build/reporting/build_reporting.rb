@@ -28,6 +28,10 @@ module XcodeBuild
         build.last_step.add_error(params)
       end
       
+      def build_warning_detected(params)
+        build.add_warning(params)
+      end
+      
       def build_env_variable_detected(key, value)
         build.set_environment_variable(key, value)
       end
@@ -68,12 +72,13 @@ module XcodeBuild
       end
       
       class Build < BuildAction
-        attr_reader :environment
+        attr_reader :environment, :warnings
         attr_writer :label
         
         def initialize(metadata)
           super(metadata)
           @environment = {}
+          @warnings = []
           @label = "Build"
         end
         
@@ -83,6 +88,18 @@ module XcodeBuild
         
         def target_build_directory
           @environment["TARGET_BUILD_DIR"]
+        end
+        
+        def add_warning(params)
+          @warnings << Warning.new(params)
+        end
+        
+        private
+        
+        class Warning < OpenStruct
+          def warning_detail
+            "in #{err.file}:#{err.line.to_s}"
+          end
         end
       end
     end

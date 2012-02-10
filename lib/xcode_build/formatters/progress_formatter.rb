@@ -49,6 +49,7 @@ module XcodeBuild
         
         if object.successful?
           puts green("#{object.label} succeeded.")
+          report_warnings(object)
         else
           puts red("#{object.label} failed.")
           puts
@@ -72,8 +73,21 @@ module XcodeBuild
             
             error_counter += 1
           end
+          report_warnings(object)
         end
         puts
+      end
+      
+      def report_warnings(object)
+        return unless object.respond_to?(:warnings)
+        
+        puts "The following warnings were reported:"
+        
+        object.warnings.each_with_index do |warning, index|
+          puts indent("#{index+1}) #{warning.message}")
+          puts indent(cyan(warning.warning_detail))
+          puts
+        end
       end
       
       private
