@@ -195,6 +195,19 @@ describe XcodeBuild::Reporting::BuildReporting do
         
       reporter.build.should have(2).warnings
     end
+    
+    it "notifies it's delegate of any warnings" do
+      assume_build_started
+      
+      delegate.should_receive(:warning_detected)
+      
+      event({:build_warning_detected=>
+        {:file=>
+          "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m",
+         :line=>16,
+         :char=>42,
+         :message=>"expected ';' after expression [1]"}})
+    end
   end
   
   context "once a build has started" do

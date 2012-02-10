@@ -30,6 +30,7 @@ module XcodeBuild
       
       def build_warning_detected(params)
         build.add_warning(params)
+        notify :warning_detected
       end
       
       def build_env_variable_detected(key, value)

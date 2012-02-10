@@ -42,6 +42,10 @@ module XcodeBuild
         report_finished(build)
       end
       
+      def warning_detected
+        print yellow("x")
+      end
+      
       def report_finished(object)
         puts
         report_warnings(object)
