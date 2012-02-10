@@ -155,19 +155,19 @@ describe XcodeBuild::Reporting::BuildReporting do
     end
     
     it "tracks the time a build takes" do
-      Timecop.travel(Chronic.parse("10 seconds ago")) do
+      Timecop.travel(Time.parse("01 Jan 2012 00:00:00")) do
         event({:build_started=>
           {:target=>"ExampleProject",
            :project=>"ExampleProject",
            :configuration=>"Release",
            :default=>true}})
            
-        Timecop.travel(Chronic.parse("5 seconds from now")) do
+        Timecop.travel(Time.parse("01 Jan 2012 00:00:05")) do
           event({:build_succeeded=>["BUILD"]})
         end
       end
       
-      reporter.build.duration.should be_within(0.01).of(5)
+      reporter.build.duration.should be_within(0.001).of(5)
     end
     
     it "tracks any environment variables reported by the build" do

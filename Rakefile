@@ -135,7 +135,6 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency("guard-rspec")
   s.add_development_dependency("growl")
   s.add_development_dependency("timecop")
-  s.add_development_dependency("chronic")
 end
 
 # This task actually builds the gem. We also regenerate a static
@@ -189,4 +188,9 @@ desc 'Build and install the gem'
 task :install => :package do
   gem_path = File.join('pkg', spec.file_name)
   system("gem install #{gem_path}")
+end
+
+desc 'Open Travis CI for this project'
+task :ci do
+  system "open http://travis-ci.org/#!/lukeredpath/xcodebuild-rb"
 end
