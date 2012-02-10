@@ -73,13 +73,12 @@ module XcodeBuild
       end
       
       class Build < BuildAction
-        attr_reader :environment, :warnings
+        attr_reader :environment
         attr_writer :label
         
         def initialize(metadata)
           super(metadata)
           @environment = {}
-          @warnings = []
           @label = "Build"
         end
         
@@ -89,18 +88,6 @@ module XcodeBuild
         
         def target_build_directory
           @environment["TARGET_BUILD_DIR"]
-        end
-        
-        def add_warning(params)
-          @warnings << Warning.new(params)
-        end
-        
-        private
-        
-        class Warning < OpenStruct
-          def warning_detail
-            "in #{self.file}:#{self.line.to_s}"
-          end
         end
       end
     end

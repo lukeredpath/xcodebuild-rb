@@ -4,13 +4,14 @@ require "xcode_build/build_step"
 
 module XcodeBuild
   class BuildAction
-    attr_reader :steps_completed
+    attr_reader :steps_completed, :warnings
     attr_writer :finished_at
 
     def initialize(metadata)
       @steps_completed = []
       @metadata = metadata
       @started_at = Time.now
+      @warnings = []
       super()
     end
 
@@ -51,6 +52,14 @@ module XcodeBuild
     def has_errors?
       failed_steps.any?
     end
+    
+    def has_warnings?
+      warnings.any?
+    end
+    
+    def error_count
+      has_errors? ? (failed_steps.map { |s| s.errors.length }) : 0
+    end
 
     def duration
       return nil unless finished?
@@ -75,6 +84,18 @@ module XcodeBuild
 
     def default_configuration?
       @metadata[:default]
+    end
+    
+    def add_warning(params)
+      @warnings << Warning.new(params)
+    end
+    
+    private
+    
+    class Warning < OpenStruct
+      def warning_detail
+        "in #{self.file}:#{self.line.to_s}"
+      end
     end
   end
 end

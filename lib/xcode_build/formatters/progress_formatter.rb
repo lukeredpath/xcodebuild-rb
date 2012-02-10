@@ -53,9 +53,13 @@ module XcodeBuild
         puts "Finished in #{object.duration} seconds."
         
         if object.successful?
-          puts green("#{object.label} succeeded.")
+          if object.has_warnings?
+            puts green("#{object.label} succeeded.") + yellow(" (#{object.warnings.length} warnings)")
+          else
+            puts green("#{object.label} succeeded.")
+          end
         else
-          puts red("#{object.label} failed.")
+          puts red("#{object.label} failed. (#{object.error_count} errors)")
           puts
           puts "Failed #{object.label.downcase} steps:"
           puts
