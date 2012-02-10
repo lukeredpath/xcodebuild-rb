@@ -79,8 +79,7 @@ namespace :examples do
   XcodeBuild::Tasks::BuildTask.new(:failing) do |t|
     t.scheme = 'FailsWithPostActionScript'
     t.invoke_from_within = "resources/FailingExampleProject"
-    #t.reporter_klass = InspectReporter
-    #t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
+    t.formatter = XcodeBuild::Formatters::ProgressFormatter.new
   end
 end
 

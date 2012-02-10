@@ -44,12 +44,12 @@ module XcodeBuild
       
       def report_finished(object)
         puts
+        report_warnings(object)
         puts
         puts "Finished in #{object.duration} seconds."
         
         if object.successful?
           puts green("#{object.label} succeeded.")
-          report_warnings(object)
         else
           puts red("#{object.label} failed.")
           puts
@@ -73,7 +73,6 @@ module XcodeBuild
             
             error_counter += 1
           end
-          report_warnings(object)
         end
         puts
       end

@@ -21,6 +21,8 @@
     return YES;
 }
 
+#warning This has a warning too
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
   /*
