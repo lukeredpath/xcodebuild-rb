@@ -28,8 +28,12 @@ module XcodeBuild
         end
 
         case line
-        when /^(.*):(\d+):(\d+): error: (.*)$/
-          notify_build_error($1, $2, $3, $4)
+        when /^(.*):(\d+):(\d+): (error|warning): (.*)$/
+          if $4 == 'error'
+            notify_build_error($1, $2, $3, $5)
+          else
+            notify_build_warning($1, $2, $3, $5)
+          end
         when /^\s+setenv (\w+) (.*)/
           notify_env_var($1, $2)
         when /^Command (.*) failed with exit code (\d+)/
@@ -75,6 +79,15 @@ module XcodeBuild
 
       def notify_build_error(file, line, char, message)
         notify_delegate(:build_error_detected, :args => [{
+             :file => file,
+             :line => line.to_i,
+             :char => char.to_i,
+          :message => message
+        }])
+      end
+      
+      def notify_build_warning(file, line, char, message)
+        notify_delegate(:build_warning_detected, :args => [{
              :file => file,
              :line => line.to_i,
              :char => char.to_i,

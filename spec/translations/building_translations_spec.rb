@@ -164,6 +164,18 @@ describe XcodeBuild::Translations::Building do
       translator << ""
       translator << "2 errors generated."
     end
+    
+    it "notifies the delegate of warnings" do
+      delegate.should_receive(:build_warning_detected).with(
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "'foo:' is deprecated"
+      )
+      translator << "CompileC ExampleProject/main.m normal"
+      translator << "/ExampleProject/main.m:16:42: warning: 'foo:' is deprecated"
+      translator << "1 warning generated."
+    end
 
     it "notifies the delegate of errors that occur when a command within a step fails" do
       delegate.should_receive(:build_error_detected).with(
