@@ -16,6 +16,7 @@ $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'xcodebuild'
 require 'timecop'
+require 'time'
 
 def delegate_should_respond_to(method)
   mock_should_respond?(delegate, method, true)
