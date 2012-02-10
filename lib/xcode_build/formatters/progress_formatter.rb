@@ -62,9 +62,9 @@ module XcodeBuild
             puts indent("#{error_counter}) #{step.type} #{step.arguments.join(" ")}")
 
             step.errors.each do |err|
-              print indent("   #{red(err.message)}")
+              puts indent(indent(red(err.message.capitalize)))
               if err.error_detail
-                puts indent(cyan(err.error_detail)) 
+                puts indent(indent(cyan(err.error_detail))) 
               else
                 puts
               end
@@ -80,11 +80,14 @@ module XcodeBuild
       
       def report_warnings(object)
         return unless object.respond_to?(:warnings)
+        return unless object.warnings.count > 0
         
+        puts
         puts "The following warnings were reported:"
+        puts
         
         object.warnings.each_with_index do |warning, index|
-          puts indent("#{index+1}) #{warning.message}")
+          puts indent(yellow("#{index+1}) #{warning.message}"))
           puts indent(cyan(warning.warning_detail))
           puts
         end

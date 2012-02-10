@@ -177,6 +177,8 @@ describe XcodeBuild::Reporting::BuildReporting do
     end
     
     it "tracks any warnings that occur" do
+      assume_build_started
+      
       event({:build_warning_detected=>
         {:file=>
           "/Users/luke/Code/mine/xcodebuild/resources/ExampleProject/ExampleProject/main.m",

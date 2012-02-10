@@ -98,7 +98,7 @@ module XcodeBuild
         
         class Warning < OpenStruct
           def warning_detail
-            "in #{err.file}:#{err.line.to_s}"
+            "in #{self.file}:#{self.line.to_s}"
           end
         end
       end

@@ -25,6 +25,8 @@
     return YES;
 }
 
+#warning Trigger an example warning
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
   /*
@@ -40,6 +42,8 @@
    If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
    */
 }
+
+#warning Trigger another warning
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {

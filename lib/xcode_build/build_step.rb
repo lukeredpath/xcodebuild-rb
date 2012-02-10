@@ -45,7 +45,7 @@ module XcodeBuild
     class Error < OpenStruct
       def error_detail
         if self.file
-          "in #{err.file}:#{err.line.to_s}"
+          "in #{self.file}:#{self.line.to_s}"
         elsif self.command
           "#{self.command} failed with exit code #{self.exit_code}"
         end
