@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe XcodeBuild::OutputTranslator do
+describe XcodeBuild::Translations::Cleaning do
   let(:delegate)   { mock('delegate', :respond_to? => true) }
   let(:translator) { XcodeBuild::OutputTranslator.new(delegate, :ignore_global_translations => true) }
   let(:translation) { translator.translations[0] }
