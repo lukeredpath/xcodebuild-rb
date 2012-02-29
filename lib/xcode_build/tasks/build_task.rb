@@ -17,6 +17,7 @@ module XcodeBuild
       attr_accessor :formatter
       attr_accessor :invoke_from_within
       attr_accessor :reporter_klass
+      attr_accessor :xcodebuild_log_path
 
       def initialize(namespace = :xcode, &block)
         @namespace = namespace
@@ -80,6 +81,7 @@ module XcodeBuild
 
       def xcodebuild(action)
         reporter.direct_raw_output_to = output_to unless formatter
+        reporter.direct_raw_output_to = File.open(xcodebuild_log_path, 'w') if xcodebuild_log_path
         
         reporter.report_running_action(action) if reporter.respond_to?(:report_running_action)
         

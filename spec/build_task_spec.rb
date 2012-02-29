@@ -102,7 +102,19 @@ describe XcodeBuild::Tasks::BuildTask do
       XcodeBuild.stub(:run).with(anything, anything).and_return(0)
       task.run(task_name)
     end
-
+    
+    it "uses a file output buffer if xcodebuild_log_path is specified even if a formatter is set" do
+      task = XcodeBuild::Tasks::BuildTask.new do |t|
+        t.formatter = stub('formatter')
+        t.xcodebuild_log_path = 'path/to/xcodebuild.log'
+        t.scheme = 'TestScheme'
+      end
+      File.should_receive(:open).with('path/to/xcodebuild.log', 'w').and_return(buffer = stub)
+      task.reporter.should_receive(:direct_raw_output_to=).with(buffer)
+      XcodeBuild.stub(:run).with(anything, anything).and_return(0)
+      task.run(task_name)
+    end
+    
     it "raises if xcodebuild returns a non-zero exit code" do
       task = XcodeBuild::Tasks::BuildTask.new { |t| t.scheme = 'TestScheme' }
       XcodeBuild.stub(:run).with(anything, anything).and_return(99)
