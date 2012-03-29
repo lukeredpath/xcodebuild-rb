@@ -54,11 +54,11 @@ module XcodeBuild
 
       def build_opts
         [].tap do |opts|
-          opts << "-project #{project_name}" if project_name
-          opts << "-target #{target}" if target
-          opts << "-workspace #{workspace}" if workspace
-          opts << "-scheme #{scheme}" if scheme
-          opts << "-configuration #{configuration}" if configuration
+          opts << "-project \"#{project_name}\"" if project_name
+          opts << "-target \"#{target}\"" if target
+          opts << "-workspace \"#{workspace}\"" if workspace
+          opts << "-scheme \"#{scheme}\"" if scheme
+          opts << "-configuration \"#{configuration}\"" if configuration
           opts << "-arch #{arch}" if arch
           opts << "-sdk #{sdk}" if sdk
           opts << "-xcconfig #{xcconfig}" if xcconfig

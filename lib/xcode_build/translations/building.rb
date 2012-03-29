@@ -28,6 +28,12 @@ module XcodeBuild
         end
 
         case line
+        when /^(.*):(\d+):(\d+):(.*): (error|warning): (.*)$/ # xcode 4.3.2
+          if $5 == 'error'
+            notify_build_error($1, $2, $3, $6)
+          else
+            notify_build_warning($1, $2, $3, $6)
+          end
         when /^(.*):(\d+):(\d+): (error|warning): (.*)$/
           if $4 == 'error'
             notify_build_error($1, $2, $3, $5)
