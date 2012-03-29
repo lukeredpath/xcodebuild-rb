@@ -142,7 +142,7 @@ describe XcodeBuild::Translations::Building do
              :char => 42,
           :message => "expected ';' after expression [1]"
       )
-      translator << "/ExampleProject/main.m:16:42:something: error: expected ';' after expression [1]"
+      translator << "/ExampleProject/main.m:16:42:{16:42-16:80}: error: expected ';' after expression [1]"
     end
 
     it "notifies the delegate of errors for different build steps" do
@@ -202,7 +202,7 @@ describe XcodeBuild::Translations::Building do
           :message => "'foo:' is deprecated"
       )
       translator << "CompileC ExampleProject/main.m normal"
-      translator << "/ExampleProject/main.m:16:42:something: warning: 'foo:' is deprecated"
+      translator << "/ExampleProject/main.m:16:42:{16:42-16:80}: warning: 'foo:' is deprecated"
       translator << "1 warning generated."
     end
 
