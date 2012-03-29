@@ -34,27 +34,27 @@ describe XcodeBuild::Tasks::BuildTask do
 
     it "includes the project" do
       task.project_name = "TestProject.xcproject"
-      task.build_opts.should include("-project TestProject.xcproject")
+      task.build_opts.should include(%{-project "TestProject.xcproject"})
     end
 
     it "includes the target" do
       task.target = "TestTarget"
-      task.build_opts.should include("-target TestTarget")
+      task.build_opts.should include(%{-target "TestTarget"})
     end
 
     it "includes the workspace" do
       task.workspace = "SomeWorkspace.xcworkspace"
-      task.build_opts.should include("-workspace SomeWorkspace.xcworkspace")
+      task.build_opts.should include(%{-workspace "SomeWorkspace.xcworkspace"})
     end
 
     it "includes the scheme" do
       task.scheme = "TestScheme"
-      task.build_opts.should include("-scheme TestScheme")
+      task.build_opts.should include(%{-scheme "TestScheme"})
     end
 
     it "includes the configuration" do
       task.configuration = "TestConfiguration"
-      task.build_opts.should include("-configuration TestConfiguration")
+      task.build_opts.should include(%{-configuration "TestConfiguration"})
     end
 
     it "includes the arch" do
