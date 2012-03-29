@@ -126,7 +126,7 @@ describe XcodeBuild::Translations::Building do
       translator << "\tCodeSign build/Debug-iphoneos/ExampleProject.app"
     end
 
-    it "notifies the delegate of errors that occur throughout the build" do
+    it "notifies the delegate of errors that occur throughout the build on < Xcode 4.3.2" do
       delegate.should_receive(:build_error_detected).with(
              :file => "/ExampleProject/main.m", 
              :line => 16,
@@ -134,6 +134,15 @@ describe XcodeBuild::Translations::Building do
           :message => "expected ';' after expression [1]"
       )
       translator << "/ExampleProject/main.m:16:42: error: expected ';' after expression [1]"
+    end
+    it "notifies the delegate of errors that occur throughout the build on >= Xcode 4.3.2" do
+      delegate.should_receive(:build_error_detected).with(
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "expected ';' after expression [1]"
+      )
+      translator << "/ExampleProject/main.m:16:42:something: error: expected ';' after expression [1]"
     end
 
     it "notifies the delegate of errors for different build steps" do
@@ -173,7 +182,7 @@ describe XcodeBuild::Translations::Building do
       translator << "Command /bin/sh failed with exit code 1"
     end
     
-    it "notifies the delegate of warnings" do
+    it "notifies the delegate of warnings on < Xcode 4.3.2" do
       delegate.should_receive(:build_warning_detected).with(
              :file => "/ExampleProject/main.m", 
              :line => 16,
@@ -182,6 +191,18 @@ describe XcodeBuild::Translations::Building do
       )
       translator << "CompileC ExampleProject/main.m normal"
       translator << "/ExampleProject/main.m:16:42: warning: 'foo:' is deprecated"
+      translator << "1 warning generated."
+    end
+    
+    it "notifies the delegate of warnings on >= Xcode 4.3.2" do
+      delegate.should_receive(:build_warning_detected).with(
+             :file => "/ExampleProject/main.m", 
+             :line => 16,
+             :char => 42,
+          :message => "'foo:' is deprecated"
+      )
+      translator << "CompileC ExampleProject/main.m normal"
+      translator << "/ExampleProject/main.m:16:42:something: warning: 'foo:' is deprecated"
       translator << "1 warning generated."
     end
 
