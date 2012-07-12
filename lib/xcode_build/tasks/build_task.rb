@@ -125,6 +125,11 @@ module XcodeBuild
             xcodebuild :clean
           end
           
+          desc "Builds and installs the target"
+          task :install do
+            xcodebuild :install
+          end
+          
           desc "Builds the specified target(s) from a clean slate."
           task :cleanbuild => [:clean, :build]
         end
