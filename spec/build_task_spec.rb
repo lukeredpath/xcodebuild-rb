@@ -71,6 +71,12 @@ describe XcodeBuild::Tasks::BuildTask do
       task.xcconfig = "path/to/config.xcconfig"
       task.build_opts.should include("-xcconfig path/to/config.xcconfig")
     end
+    
+    it 'includes custom build settings' do
+      task.add_build_setting("DSTROOT", "/tmp/dstroot")
+      task.add_build_setting("SRCROOT", "/tmp/srcroot")
+      task.build_opts.should include("DSTROOT=/tmp/dstroot", "SRCROOT=/tmp/srcroot")
+    end
   end
 
   shared_examples_for "any task" do

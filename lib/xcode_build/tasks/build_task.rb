@@ -25,6 +25,7 @@ module XcodeBuild
         @invoke_from_within = "."
         @reporter_klass = XcodeBuild::Reporter
         @hooks = {}
+        @build_settings = {}
         
         yield self if block_given?
         define
@@ -62,7 +63,15 @@ module XcodeBuild
           opts << "-arch #{arch}" if arch
           opts << "-sdk #{sdk}" if sdk
           opts << "-xcconfig #{xcconfig}" if xcconfig
+          
+          @build_settings.each do |setting, value|
+            opts << "#{setting}=#{value}"
+          end
         end
+      end
+      
+      def add_build_setting(setting, value)
+        @build_settings[setting] = value
       end
       
       def reporter
