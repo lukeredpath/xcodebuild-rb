@@ -19,7 +19,7 @@ describe XcodeBuild::Translations::UnitTesting do
       translation.stub(:building?).and_return(true)
     end
 
-    it "notifies build failed if the RunUnitTests script has not been fixed" do
+    it "notifies build failed and explanation if the RunUnitTests script has not been fixed" do
       delegate.should_receive(:build_error_detected) do |hash|
         hash[:file].should == "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Tools/Tools/RunPlatformUnitTests"
         hash[:line].should == 95
@@ -46,5 +46,30 @@ describe XcodeBuild::Translations::UnitTesting do
       translator << "Test Case '-[BlahTests testExample]' failed (0.000 seconds)."
     end
 
+    it "notifies build warning for 'Unknown Device Type.'" do
+
+      delegate.should_receive(:build_warning_detected) do |hash|
+        hash[:file].should be_nil
+        hash[:line].should == 0
+        hash[:char].should == 0
+        hash[:message].should =~ /Unknown Device Type/
+      end
+      translator << "\n\n\n"
+      translator << "2012-07-23 15:46:33.589 Blah[23806:11603] Unknown Device Type. Using UIUserInterfaceIdiomPhone based on screen size"
+    end
+
+    it "notifies build error and explanation for 'Terminating since there is no workspace.'" do
+
+      delegate.should_receive(:build_error_detected) do |hash|
+        hash[:file].should be_nil
+        hash[:line].should == 0
+        hash[:char].should == 0
+        hash[:message].should =~ /Terminating since there is no workspace/
+        hash[:message].should =~ /xcodebuild-rb note\:/
+      end
+
+      translator << "\n\n\n"
+      translator << "Terminating since there is no workspace."
+    end
   end
 end
