@@ -18,3 +18,4 @@ end
 
 require "xcode_build/translations/building"
 require "xcode_build/translations/cleaning"
+require "xcode_build/translations/unit_testing"
