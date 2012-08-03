@@ -33,6 +33,9 @@ describe XcodeBuild::Translations::UnitTesting do
 
     it "notifies build error if a test fails" do
 
+      delegate.stub(:test_step_started)
+      delegate.stub(:test_step)
+
       delegate.should_receive(:build_error_detected) do |hash|
         hash[:file].should == "/Users/chris/Projects/blah/blah/BlahTests/BlahTests.m"
         hash[:line].should == 31
@@ -70,6 +73,26 @@ describe XcodeBuild::Translations::UnitTesting do
 
       translator << "\n\n\n"
       translator << "Terminating since there is no workspace."
+    end
+
+    it "shows test case started messages" do
+
+      delegate.should_receive(:test_step_started) do |hash|
+        hash[:message].should == "Test Case '-[BlahTests testExample]' started."
+      end
+
+      translator << "\n\n\n"
+      translator << "Test Case '-[BlahTests testExample]' started."
+    end
+
+    it "shows test case messages" do
+
+      delegate.should_receive(:test_step) do |hash|
+        hash[:message].should == "Test Case '-[BlahTests testExample]' failed for some reason."
+      end
+
+      translator << "\n\n\n"
+      translator << "Test Case '-[BlahTests testExample]' failed for some reason."
     end
   end
 end

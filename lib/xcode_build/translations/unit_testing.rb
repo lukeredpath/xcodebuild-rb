@@ -23,8 +23,17 @@ EXPLANATION
             notify_build_warning(nil, 0, 0, $2)
           when /^(Terminating since .*)$/
             notify_build_error(nil, 0, 0, "#{$1}\n#{TERMINATING_SINCE_THERE_IS_NO_WORKSPACE_EXPLANATION}")
-          when /^Test Case '(.*)' started\.$/
-            @in_tests = true
+          when /^Test Case .*started\.$/
+            puts
+            puts line
+            #notify_delegate(:test_step_started, :args => [{
+            #                                          :message => line
+            #                                      }])
+          when /^Test Case .*$/
+            puts line
+            #notify_delegate(:test_step, :args => [{
+            #                                          :message => line
+            #                                      }])
           when /(.*)\:(\d+)\: error\: (.*)/
             notify_build_error($1, $2, 0, $3)
         end

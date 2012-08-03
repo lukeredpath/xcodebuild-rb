@@ -37,7 +37,17 @@ module XcodeBuild
       def build_step_finished(step)
         report_step_finished(step)
       end
-      
+
+      def test_step_started(step)
+        $stderr.puts "Hello World!!"
+        puts
+        puts(step.message)
+      end
+
+      def test_step(step)
+        puts(step.message)
+      end
+
       def build_finished(build)
         report_finished(build)
       end
