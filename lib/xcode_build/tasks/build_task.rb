@@ -71,11 +71,9 @@ module XcodeBuild
       end
       
 			def build_settings
-				result = nil
 				Dir.chdir(invoke_from_within) do
-					result = XcodeBuild.build_settings(build_opts.join(' '))
+					XcodeBuild.build_settings(build_opts.join(' '))
 				end
-				result.merge(@custom_build_settings)
 			end
 
       def add_build_setting(setting, value)

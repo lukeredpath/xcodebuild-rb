@@ -35,18 +35,8 @@ describe XcodeBuild::Tasks::BuildTask do
 				task.project_name = "TestProject.xcproject"
 			end
 
-			XcodeBuild.should_receive(:build_settings).with(task.build_opts.join(' ')).and_return(Hash.new)
+			XcodeBuild.should_receive(:build_settings).with(task.build_opts.join(' '))
 			task.build_settings
-		end
-
-		it "returns custom build settings too" do
-			task = XcodeBuild::Tasks::BuildTask.new do |task|
-				task.project_name = "TestProject.xcproject"
-				task.add_build_setting("DSTROOT", "/tmp/dstroot")
-			end
-
-			XcodeBuild.should_receive(:build_settings).with(task.build_opts.join(' ')).and_return(Hash.new)
-			task.build_settings.should include("DSTROOT" => "/tmp/dstroot")
 		end
 
 		it "changes directory if invoke_from_within is set" do
@@ -55,7 +45,7 @@ describe XcodeBuild::Tasks::BuildTask do
 			end
 
 			Dir.should_receive(:chdir).with("foo/bar").and_yield
-			XcodeBuild.should_receive(:build_settings).and_return(Hash.new)
+			XcodeBuild.should_receive(:build_settings)
 			task.build_settings
 		end
 	end
