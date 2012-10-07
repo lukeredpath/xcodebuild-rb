@@ -16,6 +16,13 @@ module XcodeBuild
     
     $?.exitstatus
   end
+
+	def self.build_settings(opts = nil)
+		opts ||= ""
+		output = StringIO.new
+		run(opts + ' -showBuildSettings', output)
+		Hash[ output.string.scan(/^\s+(\w+)\s+=\s+(.+)$/) ]
+	end
 end
 
 require 'xcode_build/build_action'
