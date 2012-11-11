@@ -1,3 +1,5 @@
+require 'stringio'
+
 module XcodeBuild
   def self.run(args = "", output_buffer = STDOUT)
     IO.popen("xcodebuild #{args} 2>&1") do |io|
