@@ -55,4 +55,14 @@ OUTPUT
       "ALTERNATE_GROUP" => "staff"
     }
   end
+  
+  it "returns a hash of settings for command-line provided settings" do
+    output = <<-OUTPUT
+Build settings from command line:
+    SDKROOT = iphoneos6.1
+OUTPUT
+
+    settings = XcodeBuild.build_settings("anything", FakeXcodeRunner.new(output))
+    settings[XcodeBuild::COMMAND_LINE_SETTINGS_KEY].should == {"SDKROOT" => "iphoneos6.1"}
+  end
 end

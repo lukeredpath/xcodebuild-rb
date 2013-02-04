@@ -1,4 +1,6 @@
 module XcodeBuild
+  COMMAND_LINE_SETTINGS_KEY = "<command-line>"
+  
   def self.run(args = "", output_buffer = STDOUT)
     IO.popen("xcodebuild #{args} 2>&1") do |io|
       begin
@@ -29,6 +31,8 @@ module XcodeBuild
     pairs = output.readlines.each do |line|
       if line =~ /Build settings for action \w+ and target (\w+)/
         current_settings = settings[$1] = []
+      elsif line =~ /from command line/
+        current_settings = settings[COMMAND_LINE_SETTINGS_KEY] = []
       else
         current_settings << line.scan(/\s+(\w+)\s=\s(.*)/)
       end
