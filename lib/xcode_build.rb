@@ -13,8 +13,29 @@ module XcodeBuild
       rescue EOFError
       end
     end
-    
+
     $?.exitstatus
+  end
+
+  def self.build_settings(args = "", runner = XcodeBuild)
+    output = StringIO.new.tap do |io|
+      runner.run("#{args} -showBuildSettings", io)
+      io.rewind
+    end
+
+    settings = {}
+    current_settings = nil
+
+    pairs = output.readlines.each do |line|
+      if line =~ /Build settings for action \w+ and target (\w+)/
+        current_settings = settings[$1] = []
+      else
+        current_settings << line.scan(/\s+(\w+)\s=\s(.*)/)
+      end
+    end
+    
+    settings.each { |target, target_settings| settings[target] = Hash[*target_settings.flatten] }
+    settings
   end
 end
 
