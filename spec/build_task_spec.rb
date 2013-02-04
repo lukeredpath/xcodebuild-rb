@@ -137,6 +137,12 @@ describe XcodeBuild::Tasks::BuildTask do
       XcodeBuild.should_receive(:run).and_return(0)
       task.run(task_name)
     end
+    
+    it "can set the formatter by mapping symbols to known presets" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      task.formatter = :progress
+      task.formatter.should be_instance_of(XcodeBuild::Formatters::ProgressFormatter)
+    end
   end
 
   shared_examples_for "build task" do
