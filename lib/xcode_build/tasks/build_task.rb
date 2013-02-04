@@ -85,6 +85,22 @@ module XcodeBuild
           @formatter = formatter
         end
       end
+      
+      def xcode_build_settings
+        output = StringIO.new.tap do |io|
+          Dir.chdir(invoke_from_within) do
+            XcodeBuild.run(build_opts_string('-showBuildSettings'), io)
+          end
+          
+          io.rewind
+        end
+        
+        pairs = output.readlines.grep(/^\s+/).map do |line| 
+          line.scan(/\s+(\w+)\s=\s(.*)/)
+        end
+        
+        Hash[*pairs.flatten]
+      end
 
       private
 
@@ -123,7 +139,7 @@ module XcodeBuild
           execute_hook(:after_clean, reporter.clean)
         end
       end
-
+      
       def define
         namespace(@namespace) do
           desc "Creates an archive build of the specified target(s)."
@@ -149,6 +165,12 @@ module XcodeBuild
 
           desc "Builds the specified target(s) from a clean slate."
           task :cleanbuild => [:clean, :build]
+          
+          desc "Prints the full Xcode build settings"
+          task :settings do
+            puts "Build settings for #{build_opts_string}:"
+            puts xcode_build_settings.map { |key, val| "#{key}=#{val}" }.join("\n")
+          end
         end
       end
 
