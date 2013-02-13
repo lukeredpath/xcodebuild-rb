@@ -30,17 +30,14 @@ module XcodeBuild
         yield self if block_given?
         define
       end
-
-      def after_build(&block)
-        @hooks[:after_build] = block
-      end
-
-      def after_clean(&block)
-        @hooks[:after_clean] = block
-      end
-
-      def after_archive(&block)
-        @hooks[:after_archive] = block
+      
+      [:before, :after].each do |prefix|
+        [:build, :clean, :archive].each do |task|
+          hook_name = "#{prefix}_#{task}"
+          define_method(hook_name) do |&block|
+            set_hook hook_name, block
+          end
+        end
       end
 
       def execute_hook(name, *args)
@@ -91,6 +88,10 @@ module XcodeBuild
       end
 
       private
+      
+      def set_hook(name, block)
+        @hooks[name.to_sym] = block
+      end
 
       def output_buffer
         @output_buffer ||= XcodeBuild::OutputTranslator.new(reporter)
@@ -105,6 +106,16 @@ module XcodeBuild
         reporter.direct_raw_output_to = File.open(xcodebuild_log_path, 'w') if xcodebuild_log_path
 
         reporter.report_running_action(action) if reporter.respond_to?(:report_running_action)
+        
+        case action
+        when :build
+          execute_hook(:before_build)
+        when :archive
+          execute_hook(:before_build)
+          execute_hook(:before_archive)
+        when :clean
+          execute_hook(:before_build)
+        end
 
         status = Dir.chdir(invoke_from_within) do
           XcodeBuild.run(build_opts_string(action), output_buffer)
