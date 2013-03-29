@@ -29,27 +29,6 @@ describe XcodeBuild::Tasks::BuildTask do
     Rake::Task["xcode:cleanbuild"].should be_instance_of(Rake::Task)
   end
 
-	context "#build_settings" do
-		it "returns build settings as hash" do
-			task = XcodeBuild::Tasks::BuildTask.new do |task|
-				task.project_name = "TestProject.xcproject"
-			end
-
-			XcodeBuild.should_receive(:build_settings).with(task.build_opts.join(' '))
-			task.build_settings
-		end
-
-		it "changes directory if invoke_from_within is set" do
-			task = XcodeBuild::Tasks::BuildTask.new do |task|
-				task.invoke_from_within = "foo/bar"
-			end
-
-			Dir.should_receive(:chdir).with("foo/bar").and_yield
-			XcodeBuild.should_receive(:build_settings)
-			task.build_settings
-		end
-	end
-
   context "#build_opts" do
     let(:task) { XcodeBuild::Tasks::BuildTask.new }
 
@@ -157,6 +136,12 @@ describe XcodeBuild::Tasks::BuildTask do
       Dir.should_receive(:chdir).with("foo/bar").and_yield
       XcodeBuild.should_receive(:run).and_return(0)
       task.run(task_name)
+    end
+    
+    it "can set the formatter by mapping symbols to known presets" do
+      task = XcodeBuild::Tasks::BuildTask.new
+      task.formatter = :progress
+      task.formatter.should be_instance_of(XcodeBuild::Formatters::ProgressFormatter)
     end
   end
 

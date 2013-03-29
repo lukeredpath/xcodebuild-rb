@@ -130,7 +130,7 @@ spec = Gem::Specification.new do |s|
 
   # If your tests use any gems, include them here
   s.add_development_dependency("rspec")
-  s.add_development_dependency("rake", ">= 0.9.2.2")
+  s.add_development_dependency("rake", "~> 0.9.2.2")
   s.add_development_dependency("rdoc", "~> 3.12")
   s.add_development_dependency("guard-rspec")
   s.add_development_dependency("growl")
