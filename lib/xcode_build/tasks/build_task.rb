@@ -18,6 +18,7 @@ module XcodeBuild
       attr_accessor :invoke_from_within
       attr_accessor :reporter_klass
       attr_accessor :xcodebuild_log_path
+      attr_accessor :archive_path
 
       def initialize(namespace = :xcode, &block)
         @namespace = namespace
@@ -63,6 +64,7 @@ module XcodeBuild
           opts << "-arch #{arch}" if arch
           opts << "-sdk #{sdk}" if sdk
           opts << "-xcconfig #{xcconfig}" if xcconfig
+          opts << "-archivePath #{archive_path}" if archive_path
           
           @build_settings.each do |setting, value|
             opts << "#{setting}=#{value}"
