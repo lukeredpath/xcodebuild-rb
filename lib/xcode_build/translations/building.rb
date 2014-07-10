@@ -42,6 +42,8 @@ module XcodeBuild
           end
         when /^\s+setenv (\w+) (.*)/
           notify_env_var($1, $2)
+        when /^\s+export (\w+)=(.*)/
+          notify_env_var($1, $2)
         when /^Command (.*) failed with exit code (\d+)/
           notify_build_step_command_failed($1, $2)
         when /^The following build commands failed:/

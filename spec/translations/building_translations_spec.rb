@@ -218,9 +218,14 @@ describe XcodeBuild::Translations::Building do
       translator << "/ExampleProject/main.m:16:42: warning: expected ';' after expression [1]"
     end
     
-    it "notifies the delegate of any environment variables that the build outputs" do
+    it "notifies the delegate of any environment variables that the build outputs using setenv" do
       delegate.should_receive(:build_env_variable_detected).with("ARCHS", "armv7")
       translator << "   setenv ARCHS armv7"
+    end
+    
+    it "notifies the delegate of any environment variables that the build outputs using export" do
+      delegate.should_receive(:build_env_variable_detected).with("ARCHS", "armv7")
+      translator << "   export ARCHS=armv7"
     end
     
     it "treats :build_env_variable_detected as an optional delegate message" do
