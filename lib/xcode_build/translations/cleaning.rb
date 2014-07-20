@@ -46,8 +46,8 @@ module XcodeBuild
       def notify_clean_started(line)
         @cleaning = true
         
-        target = line.match(/TARGET (\w+)/)[1]
-        project = line.match(/PROJECT (\w+)/)[1]
+        target = line.match(/TARGET ([\w\+\-\. ]+) OF PROJECT/)[1]
+        project = line.match(/OF PROJECT ([\w\+ ]+) WITH/)[1]
 
         if line =~ /DEFAULT CONFIGURATION \((\w+)\)/
           configuration = $1
