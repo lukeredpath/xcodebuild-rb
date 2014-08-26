@@ -1,3 +1,5 @@
+require 'stringio'
+
 module XcodeBuild
   COMMAND_LINE_SETTINGS_KEY = "<command-line>"
   
