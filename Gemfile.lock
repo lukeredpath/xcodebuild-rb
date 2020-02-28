@@ -16,7 +16,7 @@ GEM
     guard-rspec (0.6.0)
       guard (>= 0.10.0)
     json (1.6.5)
-    rake (0.9.2.2)
+    rake (12.3.3)
     rdoc (3.12)
       json (~> 1.4)
     rspec (2.8.0)
@@ -37,7 +37,7 @@ PLATFORMS
 DEPENDENCIES
   growl
   guard-rspec
-  rake (~> 0.9.2.2)
+  rake (~> 12.3.3)
   rdoc (~> 3.12)
   rspec
   timecop
