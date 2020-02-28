@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<state_machine>, ["~> 1.1.2"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
-      s.add_development_dependency(%q<rake>, ["~> 0.9.2.2"])
+      s.add_development_dependency(%q<rake>, "~> 12.3.3")
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<guard-rspec>, [">= 0"])
       s.add_development_dependency(%q<growl>, [">= 0"])
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<state_machine>, ["~> 1.1.2"])
       s.add_dependency(%q<rspec>, [">= 0"])
-      s.add_dependency(%q<rake>, ["~> 0.9.2.2"])
+      s.add_dependency(%q<rake>, "~> 12.3.3")
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<guard-rspec>, [">= 0"])
       s.add_dependency(%q<growl>, [">= 0"])
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<state_machine>, ["~> 1.1.2"])
     s.add_dependency(%q<rspec>, [">= 0"])
-    s.add_dependency(%q<rake>, ["~> 0.9.2.2"])
+    s.add_dependency(%q<rake>, "~> 12.3.3")
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<guard-rspec>, [">= 0"])
     s.add_dependency(%q<growl>, [">= 0"])
